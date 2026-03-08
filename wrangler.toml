@@ -1,0 +1,24 @@
+name = "tueban-api"
+main = "apps/api/src/index.ts"
+compatibility_date = "2026-03-08"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tueban-db"
+database_id = "REPLACE_AFTER_CREATE"
+
+[[queues.producers]]
+queue = "tueban-ledger-queue"
+binding = "LEDGER_QUEUE"
+
+[[queues.consumers]]
+queue = "tueban-ledger-queue"
+max_batch_size = 10
+max_batch_timeout = 5
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "tueban-media"
