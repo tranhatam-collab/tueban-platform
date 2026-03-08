@@ -8,11 +8,11 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "tueban-db"
-database_id = "REPLACE_AFTER_CREATE"
+database_id = "bc451abd-6de3-4f71-a324-1894b9a49418"
 
 [[queues.producers]]
-queue = "tueban-ledger-queue"
 binding = "LEDGER_QUEUE"
+queue = "tueban-ledger-queue"
 
 [[queues.consumers]]
 queue = "tueban-ledger-queue"
