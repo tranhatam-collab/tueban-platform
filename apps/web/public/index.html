@@ -3,35 +3,85 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tueban.com</title>
-  <meta name="description" content="Tueban.com - Learning Operating System" />
+  <title>Tueban.com | Learning Operating System</title>
+  <meta
+    name="description"
+    content="Tueban.com là nền tảng học tập có tiến trình, có bằng chứng, có kỷ luật học tập và vận hành tri thức theo hệ thống."
+  />
   <meta name="theme-color" content="#0b0b0c" />
+  <link rel="canonical" href="https://tueban.com/" />
   <link rel="manifest" href="/manifest.json" />
-  <link rel="stylesheet" href="/assets/site.css" />
+  <link rel="stylesheet" href="/assets/app.css" />
 </head>
 <body>
-  <main class="shell">
-    <section class="card">
-      <p class="eyebrow">Tueban Foundation</p>
-      <h1>Tueban Platform</h1>
-      <p class="lead">
-        Nền tảng đang được thiết lập theo cấu trúc chuẩn: Public Knowledge, Learning Core,
-        Proof Chain, Admin Audit, Media Library.
+  <main class="page-shell">
+    <header class="page-header">
+      <div class="status">Tueban.com • Learning Operating System</div>
+      <h1>Học tập có tiến trình, có bằng chứng, có hệ thống</h1>
+      <p class="muted">
+        Tueban là nền tảng học tập giúp người học đi từ nhận thức đến thực hành,
+        từ bài học đến tiến độ, từ nội dung đến lịch sử hoàn thành. Toàn bộ dữ liệu
+        khóa học, lesson, progress và complete lesson đang được kết nối trực tiếp với
+        Worker API và D1 database của hệ thống.
       </p>
+    </header>
 
-      <div class="actions">
-        <a class="btn" href="http//iai.one" target="_blank" rel="noreferrer">
-          By IAI 
-        </a>
-        <button class="btn btn-secondary" id="healthBtn" type="button">
-          Kiểm tra API
-        </button>
+    <section class="grid-list">
+      <article class="card">
+        <div class="status">Bắt đầu</div>
+        <h2>Danh sách khóa học</h2>
+        <p class="muted">
+          Xem toàn bộ khóa học hiện có trên hệ thống Tueban.
+        </p>
+        <div class="actions">
+          <a class="btn" href="/courses.html">Mở trang khóa học</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="status">Khóa học mẫu</div>
+        <h2>Nhập Môn Trí Tuệ Vận Hành</h2>
+        <p class="muted">
+          Đi vào khóa học mẫu đã seed trong D1 để kiểm tra outline, topic và lesson thật.
+        </p>
+        <div class="actions">
+          <a class="btn" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Mở khóa học mẫu</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="status">Lesson mẫu</div>
+        <h2>Bài 1: Mở Đầu</h2>
+        <p class="muted">
+          Xem nội dung lesson thật, tài liệu đính kèm và nút hoàn thành bài học.
+        </p>
+        <div class="actions">
+          <a class="btn" href="/lesson.html?slug=bai-1-mo-dau">Mở bài học mẫu</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="debug-panel">
+      <h2>Đi nhanh trong hệ thống</h2>
+      <div class="stack">
+        <div class="card">
+          <p><strong>Trang chủ:</strong> <a href="https://tueban.com/">https://tueban.com/</a></p>
+          <p><strong>Khóa học:</strong> <a href="https://tueban.com/courses.html">https://tueban.com/courses.html</a></p>
+          <p><strong>Course mẫu:</strong> <a href="https://tueban.com/course.html?slug=nhap-mon-tri-tue-van-hanh">https://tueban.com/course.html?slug=nhap-mon-tri-tue-van-hanh</a></p>
+          <p><strong>Lesson mẫu:</strong> <a href="https://tueban.com/lesson.html?slug=bai-1-mo-dau">https://tueban.com/lesson.html?slug=bai-1-mo-dau</a></p>
+        </div>
+
+        <div class="card">
+          <h3>Trạng thái hiện tại của hệ thống</h3>
+          <p class="muted">
+            Backend Worker đã chạy, D1 schema đã tạo, seed data đã vào database,
+            route course và lesson đang hoạt động, frontend học viên đã đọc được dữ liệu thật.
+          </p>
+        </div>
       </div>
-
-      <pre id="output" class="output">Đang nâng cấp hệ thống...</pre>
     </section>
   </main>
 
-  <script src="/assets/site.js"></script>
+  <script src="/assets/app.js"></script>
 </body>
 </html>
