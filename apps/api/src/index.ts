@@ -6,8 +6,10 @@ import {
   type SystemEnv
 } from "./routes/system";
 import { listCoursesRoute, courseOutlineRoute } from "./routes/courses";
+import { courseDetailRoute } from "./routes/course";
 import { lessonDetailRoute } from "./routes/lessons";
 import { progressRoute } from "./routes/progress";
+import { completeLessonRoute } from "./routes/lesson-actions";
 import { json } from "./lib/json";
 
 export interface Env extends SystemEnv {}
@@ -16,6 +18,7 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname;
+    const method = request.method.toUpperCase();
     const segments = pathname.split("/").filter(Boolean);
 
     if (pathname === "/api/health") {
@@ -34,11 +37,22 @@ export default {
       return r2TestRoute(env);
     }
 
-    if (pathname === "/api/courses") {
+    if (method === "GET" && pathname === "/api/courses") {
       return listCoursesRoute(env);
     }
 
     if (
+      method === "GET" &&
+      segments.length === 3 &&
+      segments[0] === "api" &&
+      segments[1] === "course"
+    ) {
+      const courseSlug = segments[2];
+      return courseDetailRoute(env, courseSlug);
+    }
+
+    if (
+      method === "GET" &&
       segments.length === 4 &&
       segments[0] === "api" &&
       segments[1] === "courses" &&
@@ -49,6 +63,7 @@ export default {
     }
 
     if (
+      method === "GET" &&
       segments.length === 3 &&
       segments[0] === "api" &&
       segments[1] === "lessons"
@@ -57,14 +72,19 @@ export default {
       return lessonDetailRoute(env, lessonSlug);
     }
 
-    if (pathname === "/api/progress") {
+    if (method === "GET" && pathname === "/api/progress") {
       return progressRoute(request, env);
+    }
+
+    if (method === "POST" && pathname === "/api/lesson/complete") {
+      return completeLessonRoute(request, env);
     }
 
     return json(
       {
         ok: false,
         error: "Not found",
+        method,
         path: pathname
       },
       404
