@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "tueban-api",
+  "main": "apps/api/src/index.ts",
+  "compatibility_date": "2026-03-08",
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tueban-db",
+      "database_id": "bc451abd-6de3-4f71-a324-1894b9a49418"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "tueban-media"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "LEDGER_QUEUE",
+        "queue": "tueban-ledger-queue"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "tueban-ledger-queue",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5
+      }
+    ]
+  }
+}
