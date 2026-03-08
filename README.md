@@ -21,6 +21,6 @@ Tueban.com là một Learning Operating System gồm:
 - Cloudflare Queues
 - GitHub
 
-## Project status
+## Current phase
 
 Phase 1: Foundation and specification lock
