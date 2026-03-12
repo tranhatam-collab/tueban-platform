@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Tueban.com | Learning Operating System</title>
   <meta
     name="description"
@@ -13,74 +13,209 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
-<body>
-  <main class="page-shell">
-    <header class="page-header">
-      <div class="status">Tueban.com • Learning Operating System</div>
-      <h1>Học tập có tiến trình, có bằng chứng, có hệ thống</h1>
-      <p class="muted">
-        Tueban là nền tảng học tập giúp người học đi từ nhận thức đến thực hành,
-        từ bài học đến tiến độ, từ nội dung đến lịch sử hoàn thành. Toàn bộ dữ liệu
-        khóa học, lesson, progress và complete lesson đang được kết nối trực tiếp với
-        Worker API và D1 database của hệ thống.
-      </p>
-    </header>
+<body data-page="home">
+  <div class="app-shell">
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">T</span>
+          <span class="brand-text">
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </span>
+        </a>
 
-    <section class="grid-list">
-      <article class="card">
-        <div class="status">Bắt đầu</div>
-        <h2>Danh sách khóa học</h2>
-        <p class="muted">
-          Xem toàn bộ khóa học hiện có trên hệ thống Tueban.
-        </p>
-        <div class="actions">
-          <a class="btn" href="/courses.html">Mở trang khóa học</a>
-        </div>
-      </article>
+        <nav class="desktop-nav" aria-label="Điều hướng chính">
+          <a href="/">Trang chủ</a>
+          <a href="/courses.html">Khóa học</a>
+          <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+          <a href="/lesson.html?slug=bai-1-mo-dau">Lesson mẫu</a>
+        </nav>
 
-      <article class="card">
-        <div class="status">Khóa học mẫu</div>
-        <h2>Nhập Môn Trí Tuệ Vận Hành</h2>
-        <p class="muted">
-          Đi vào khóa học mẫu đã seed trong D1 để kiểm tra outline, topic và lesson thật.
-        </p>
-        <div class="actions">
-          <a class="btn" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Mở khóa học mẫu</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <div class="status">Lesson mẫu</div>
-        <h2>Bài 1: Mở Đầu</h2>
-        <p class="muted">
-          Xem nội dung lesson thật, tài liệu đính kèm và nút hoàn thành bài học.
-        </p>
-        <div class="actions">
-          <a class="btn" href="/lesson.html?slug=bai-1-mo-dau">Mở bài học mẫu</a>
-        </div>
-      </article>
-    </section>
-
-    <section class="debug-panel">
-      <h2>Đi nhanh trong hệ thống</h2>
-      <div class="stack">
-        <div class="card">
-          <p><strong>Trang chủ:</strong> <a href="https://tueban.com/">https://tueban.com/</a></p>
-          <p><strong>Khóa học:</strong> <a href="https://tueban.com/courses.html">https://tueban.com/courses.html</a></p>
-          <p><strong>Course mẫu:</strong> <a href="https://tueban.com/course.html?slug=nhap-mon-tri-tue-van-hanh">https://tueban.com/course.html?slug=nhap-mon-tri-tue-van-hanh</a></p>
-          <p><strong>Lesson mẫu:</strong> <a href="https://tueban.com/lesson.html?slug=bai-1-mo-dau">https://tueban.com/lesson.html?slug=bai-1-mo-dau</a></p>
-        </div>
-
-        <div class="card">
-          <h3>Trạng thái hiện tại của hệ thống</h3>
-          <p class="muted">
-            Backend Worker đã chạy, D1 schema đã tạo, seed data đã vào database,
-            route course và lesson đang hoạt động, frontend học viên đã đọc được dữ liệu thật.
-          </p>
+        <div class="header-actions">
+          <a class="btn btn-secondary desktop-only" href="/courses.html">Bắt đầu học</a>
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            type="button"
+            aria-label="Mở menu"
+            aria-expanded="false"
+            aria-controls="mobile-drawer"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </div>
-    </section>
-  </main>
+    </header>
+
+    <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-brand">
+          <span class="brand-mark">T</span>
+          <div>
+            <strong>Tueban</strong>
+            <small>Learning Operating System</small>
+          </div>
+        </div>
+        <button class="drawer-close" id="drawer-close" type="button" aria-label="Đóng menu">✕</button>
+      </div>
+
+      <nav class="drawer-nav" aria-label="Menu mobile">
+        <a href="/">Trang chủ</a>
+        <a href="/courses.html">Khóa học</a>
+        <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Khóa học mẫu</a>
+        <a href="/lesson.html?slug=bai-1-mo-dau">Bài học mẫu</a>
+      </nav>
+
+      <div class="drawer-panel">
+        <div class="status-pill success">Hệ thống đang kết nối API thật</div>
+        <p class="muted">
+          Từ mobile có thể đi vào course, lesson và complete lesson như một app học tập tạm thời.
+        </p>
+      </div>
+    </aside>
+
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+    <main class="page-shell home-page">
+      <section class="hero hero-home">
+        <div class="hero-copy">
+          <div class="status-pill">Tueban.com • Learning Operating System</div>
+          <h1>Học tập có tiến trình, có bằng chứng, có hệ thống</h1>
+          <p class="hero-text">
+            Tueban không chỉ là nơi đặt bài học. Đây là nền tảng học tập giúp người học đi từ nhận thức đến thực hành,
+            từ lesson đến tiến độ, từ nội dung đến lịch sử hoàn thành. Toàn bộ course, lesson, progress và complete lesson
+            đang được nối trực tiếp với Worker API và D1 database của hệ thống.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn" href="/courses.html">Mở danh sách khóa học</a>
+            <a class="btn btn-secondary" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Xem course mẫu</a>
+          </div>
+
+          <div class="hero-meta">
+            <div class="meta-item">
+              <strong>Backend</strong>
+              <span>Cloudflare Workers + D1 + R2</span>
+            </div>
+            <div class="meta-item">
+              <strong>Frontend</strong>
+              <span>Pages + Mobile-first web app</span>
+            </div>
+            <div class="meta-item">
+              <strong>Logic</strong>
+              <span>Course • Lesson • Progress • Complete</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <div class="hero-stack">
+            <article class="mini-panel">
+              <div class="mini-label">Lối vào chính</div>
+              <h3>Danh sách khóa học</h3>
+              <p>Đi vào tất cả khóa học hiện có của hệ thống.</p>
+              <a href="/courses.html">/courses.html</a>
+            </article>
+
+            <article class="mini-panel">
+              <div class="mini-label">Course mẫu</div>
+              <h3>Nhập Môn Trí Tuệ Vận Hành</h3>
+              <p>Xem module, topic và lesson thật đang lấy từ database.</p>
+              <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Mở course mẫu</a>
+            </article>
+
+            <article class="mini-panel">
+              <div class="mini-label">Lesson mẫu</div>
+              <h3>Bài 1: Mở Đầu</h3>
+              <p>Xem nội dung, tài liệu đính kèm và complete lesson.</p>
+              <a href="/lesson.html?slug=bai-1-mo-dau">Mở lesson mẫu</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-head">
+          <h2>Hệ thống đang chạy thật</h2>
+          <p class="muted">
+            Đây không còn là landing page rỗng. Những phần dưới đây đã có dữ liệu thật và luồng thật.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">01</div>
+            <h3>Course thật</h3>
+            <p>Danh sách khóa học, course detail và outline đang lấy từ D1 qua Worker API.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">02</div>
+            <h3>Lesson thật</h3>
+            <p>Bài học có nội dung, asset đính kèm và route lesson detail hoạt động thật.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">03</div>
+            <h3>Progress thật</h3>
+            <p>Luồng complete lesson đã nối vào API và cập nhật progress trong database.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon">04</div>
+            <h3>Mobile-first</h3>
+            <p>Menu drawer, card layout và điều hướng đang được chuẩn hóa như app tạm thời.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-head">
+          <h2>Bắt đầu từ đâu</h2>
+          <p class="muted">Nếu đây là lần đầu vào hệ thống, đi theo đúng trình tự sau.</p>
+        </div>
+
+        <div class="path-grid">
+          <article class="path-card">
+            <span class="path-step">Bước 1</span>
+            <h3>Xem danh sách khóa học</h3>
+            <p>Đi vào toàn bộ khóa học trước để hiểu cấu trúc chung.</p>
+            <a class="text-link" href="/courses.html">Đi đến khóa học</a>
+          </article>
+
+          <article class="path-card">
+            <span class="path-step">Bước 2</span>
+            <h3>Mở course mẫu</h3>
+            <p>Xem module, topic và liên kết lesson trong một khóa học mẫu hoàn chỉnh.</p>
+            <a class="text-link" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Đi đến course mẫu</a>
+          </article>
+
+          <article class="path-card">
+            <span class="path-step">Bước 3</span>
+            <h3>Mở lesson và hoàn thành</h3>
+            <p>Đi vào bài học mẫu và thử nút hoàn thành bài học để thấy flow thật.</p>
+            <a class="text-link" href="/lesson.html?slug=bai-1-mo-dau">Đi đến lesson mẫu</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block compact">
+        <div class="section-head">
+          <h2>Đi nhanh trong hệ thống</h2>
+        </div>
+
+        <div class="quick-links card">
+          <p><strong>Trang chủ:</strong> <a href="/">/</a></p>
+          <p><strong>Khóa học:</strong> <a href="/courses.html">/courses.html</a></p>
+          <p><strong>Course mẫu:</strong> <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">/course.html?slug=nhap-mon-tri-tue-van-hanh</a></p>
+          <p><strong>Lesson mẫu:</strong> <a href="/lesson.html?slug=bai-1-mo-dau">/lesson.html?slug=bai-1-mo-dau</a></p>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script src="/assets/app.js"></script>
 </body>
