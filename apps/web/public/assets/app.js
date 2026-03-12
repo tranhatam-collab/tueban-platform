@@ -4,13 +4,28 @@ function qs(selector) {
   return document.querySelector(selector);
 }
 
+function qsa(selector) {
+  return Array.from(document.querySelectorAll(selector));
+}
+
 function getParam(key) {
   return new URLSearchParams(window.location.search).get(key);
 }
 
 async function fetchJson(url, options = {}) {
   const res = await fetch(url, options);
-  const data = await res.json();
+
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = {
+      ok: false,
+      error: "Response is not valid JSON",
+      status: res.status
+    };
+  }
+
   return { res, data };
 }
 
@@ -18,6 +33,13 @@ function setText(selector, value) {
   const el = qs(selector);
   if (el) {
     el.textContent = value;
+  }
+}
+
+function setHtml(selector, value) {
+  const el = qs(selector);
+  if (el) {
+    el.innerHTML = value;
   }
 }
 
@@ -30,7 +52,8 @@ function escapeHtml(value) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function nl2br(value) {
@@ -123,19 +146,32 @@ function lessonLink(slug) {
   return `/lesson.html?slug=${encodeURIComponent(slug)}`;
 }
 
+function setLoadingCard(selector, text) {
+  setHtml(selector, `<div class="card">${escapeHtml(text)}</div>`);
+}
+
 async function renderCoursesPage() {
   const mount = qs("#courses-list");
   const output = qs("#courses-output");
 
   if (!mount) return;
 
-  mount.innerHTML = `<div class="card">Đang tải danh sách khóa học...</div>`;
+  setLoadingCard("#courses-list", "Đang tải danh sách khóa học...");
 
   try {
-    const { data } = await fetchJson(`${API_BASE}/api/courses`);
+    const { res, data } = await fetchJson(`${API_BASE}/api/courses`);
     renderApiOutput("#courses-output", data);
 
-    const courses = data?.courses || [];
+    if (!res.ok || !data?.ok) {
+      mount.innerHTML = `
+        <div class="card">
+          Lỗi tải khóa học: ${escapeHtml(data?.error || `HTTP ${res.status}`)}
+        </div>
+      `;
+      return;
+    }
+
+    const courses = data.courses || [];
 
     if (!courses.length) {
       mount.innerHTML = `<div class="card">Chưa có khóa học nào.</div>`;
@@ -143,8 +179,8 @@ async function renderCoursesPage() {
     }
 
     mount.innerHTML = courses
-      .map(
-        (course) => `
+      .map((course) => {
+        return `
           <article class="card course-card">
             <div class="status">${escapeHtml(course.level)} • ${escapeHtml(course.status)}</div>
             <h3>${escapeHtml(course.title)}</h3>
@@ -153,8 +189,8 @@ async function renderCoursesPage() {
               <a class="btn" href="${courseLink(course.slug)}">Xem khóa học</a>
             </div>
           </article>
-        `
-      )
+        `;
+      })
       .join("");
   } catch (error) {
     mount.innerHTML = `<div class="card">Lỗi tải khóa học: ${escapeHtml(String(error))}</div>`;
@@ -171,26 +207,27 @@ async function renderCoursePage() {
   if (!slug || !modulesEl) return;
 
   setText("#course-slug", slug);
-  modulesEl.innerHTML = `<div class="card">Đang tải khóa học...</div>`;
+  setLoadingCard("#course-modules", "Đang tải khóa học...");
 
   try {
-    const [{ data: detailData }, { data: outlineData }] = await Promise.all([
-      fetchJson(`${API_BASE}/api/course/${encodeURIComponent(slug)}`),
-      fetchJson(`${API_BASE}/api/courses/${encodeURIComponent(slug)}/outline`)
-    ]);
+    const [{ res: detailRes, data: detailData }, { res: outlineRes, data: outlineData }] =
+      await Promise.all([
+        fetchJson(`${API_BASE}/api/course/${encodeURIComponent(slug)}`),
+        fetchJson(`${API_BASE}/api/courses/${encodeURIComponent(slug)}/outline`)
+      ]);
 
     renderApiOutput("#course-output", {
       detail: detailData,
       outline: outlineData
     });
 
-    if (!detailData?.ok || !detailData?.course) {
+    if (!detailRes.ok || !detailData?.ok || !detailData?.course) {
       modulesEl.innerHTML = `<div class="card">Không tìm thấy khóa học.</div>`;
       return;
     }
 
     const course = detailData.course;
-    const modules = outlineData?.modules || [];
+    const modules = outlineRes.ok && outlineData?.ok ? outlineData.modules || [] : [];
 
     setText("#course-title", course.title);
     setText(
@@ -208,16 +245,16 @@ async function renderCoursePage() {
     }
 
     modulesEl.innerHTML = modules
-      .map(
-        (module) => `
+      .map((module) => {
+        return `
           <section class="card module-card">
             <h3>${escapeHtml(module.title)}</h3>
             <p class="muted">${escapeHtml(module.description || "Chưa có mô tả module.")}</p>
 
             <div class="topic-list">
               ${(module.topics || [])
-                .map(
-                  (topic) => `
+                .map((topic) => {
+                  return `
                     <article class="card topic-card">
                       <div class="status">Topic ${escapeHtml(String(topic.position))}</div>
                       <h4>${escapeHtml(topic.title)}</h4>
@@ -225,24 +262,24 @@ async function renderCoursePage() {
 
                       <div class="lesson-list">
                         ${(topic.lessons || [])
-                          .map(
-                            (lesson) => `
+                          .map((lesson) => {
+                            return `
                               <a class="lesson-link" href="${lessonLink(lesson.slug)}">
                                 <strong>${escapeHtml(lesson.title)}</strong>
                                 <small>${escapeHtml(lesson.lesson_type)} • ${escapeHtml(lesson.completion_mode)} • ${escapeHtml(lesson.status)}</small>
                               </a>
-                            `
-                          )
+                            `;
+                          })
                           .join("")}
                       </div>
                     </article>
-                  `
-                )
+                  `;
+                })
                 .join("")}
             </div>
           </section>
-        `
-      )
+        `;
+      })
       .join("");
   } catch (error) {
     modulesEl.innerHTML = `<div class="card">Lỗi tải khóa học: ${escapeHtml(String(error))}</div>`;
@@ -261,10 +298,10 @@ async function renderLessonPage() {
   bodyEl.innerHTML = `<div class="card">Đang tải bài học...</div>`;
 
   try {
-    const { data } = await fetchJson(`${API_BASE}/api/lessons/${encodeURIComponent(slug)}`);
+    const { res, data } = await fetchJson(`${API_BASE}/api/lessons/${encodeURIComponent(slug)}`);
     renderApiOutput("#lesson-output", data);
 
-    if (!data?.ok || !data?.lesson) {
+    if (!res.ok || !data?.ok || !data?.lesson) {
       bodyEl.innerHTML = `<div class="card">Không tìm thấy bài học.</div>`;
       return;
     }
@@ -286,8 +323,8 @@ async function renderLessonPage() {
         assetsEl.innerHTML = `<div class="card">Bài học này chưa có tài liệu đính kèm.</div>`;
       } else {
         assetsEl.innerHTML = assets
-          .map(
-            (asset) => `
+          .map((asset) => {
+            return `
               <article class="card asset-card">
                 <div class="status">${escapeHtml(asset.asset_type)} • ${escapeHtml(asset.visibility)}</div>
                 <h4>${escapeHtml(asset.title)}</h4>
@@ -298,8 +335,8 @@ async function renderLessonPage() {
                   Download: ${asset.downloadable ? "Có" : "Không"}
                 </p>
               </article>
-            `
-          )
+            `;
+          })
           .join("");
       }
     }
@@ -399,8 +436,45 @@ function bindEvents() {
   }
 }
 
+function bindMobileDrawer() {
+  const toggle = qs("#menu-toggle");
+  const drawer = qs("#mobile-drawer");
+  const closeBtn = qs("#drawer-close");
+  const backdrop = qs("#drawer-backdrop");
+
+  if (!toggle || !drawer || !backdrop) return;
+
+  const openDrawer = () => {
+    drawer.classList.add("is-open");
+    backdrop.classList.add("is-open");
+    drawer.setAttribute("aria-hidden", "false");
+    toggle.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeDrawer = () => {
+    drawer.classList.remove("is-open");
+    backdrop.classList.remove("is-open");
+    drawer.setAttribute("aria-hidden", "true");
+    toggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  };
+
+  toggle.addEventListener("click", openDrawer);
+  backdrop.addEventListener("click", closeDrawer);
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeDrawer);
+  }
+
+  qsa(".drawer-nav a").forEach((link) => {
+    link.addEventListener("click", closeDrawer);
+  });
+}
+
 function initPage() {
   bindEvents();
+  bindMobileDrawer();
 
   if (qs("#courses-list")) {
     renderCoursesPage();
