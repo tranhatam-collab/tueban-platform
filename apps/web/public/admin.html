@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tueban Admin</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+  <style>
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-header .brand { font-size: 18px; font-weight: 700; }
+    .admin-header .brand span { color: var(--muted); font-weight: 400; font-size: 14px; margin-left: 8px; }
+
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      padding: 16px 24px 0;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      appearance: none;
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+    .tab-btn:hover { color: var(--text); }
+
+    .tab-pane { display: none; padding: 24px; }
+    .tab-pane.active { display: block; }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .form-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      position: sticky;
+      top: 100px;
+    }
+    .form-card h3 {
+      margin: 0 0 20px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .form-group { display: grid; gap: 8px; margin-bottom: 14px; }
+    .form-group label { font-size: 13px; color: var(--muted); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      appearance: none;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: rgba(255,255,255,0.2);
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-group select option { background: #1a1b1f; }
+
+    .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .form-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .form-msg.ok { color: var(--success); border-color: rgba(125, 211, 160, 0.3); }
+    .form-msg.err { color: var(--danger); border-color: rgba(255, 138, 138, 0.3); }
+    .form-msg.hidden { display: none; }
+
+    .list-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .list-header h3 { margin: 0; font-size: 15px; font-weight: 600; }
+    .list-count {
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th {
+      text-align: left;
+      padding: 10px 16px;
+      color: var(--muted);
+      font-weight: 500;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-2);
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge.published, .badge.active { color: var(--success); border-color: rgba(125,211,160,0.3); }
+    .badge.draft { color: #c4a95e; border-color: rgba(196,169,94,0.3); }
+    .badge.archived { color: var(--danger); border-color: rgba(255,138,138,0.3); }
+
+    .edit-btn {
+      appearance: none;
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .edit-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .loading-state {
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .full-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 20px;
+    }
+
+    @media (max-width: 900px) {
+      .admin-grid { grid-template-columns: 1fr; }
+      .form-card { position: static; }
+      .tab-nav { padding: 12px 16px 0; }
+      .tab-pane { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="brand">Tueban <span>Admin CMS</span></div>
+  <a href="/" class="btn btn-secondary" style="font-size:13px;padding:8px 14px;">← Web</a>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="courses">Courses</button>
+  <button class="tab-btn" data-tab="modules">Modules</button>
+  <button class="tab-btn" data-tab="topics">Topics</button>
+  <button class="tab-btn" data-tab="lessons">Lessons</button>
+  <button class="tab-btn" data-tab="users">Users</button>
+  <button class="tab-btn" data-tab="progress">Progress</button>
+  <button class="tab-btn" data-tab="audit">Audit</button>
+  <button class="tab-btn" data-tab="ledger">Ledger</button>
+</nav>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: COURSES -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-courses" class="tab-pane active">
+  <div class="admin-grid">
+
+    <div class="form-card">
+      <h3 id="course-form-title">Tạo khóa học mới</h3>
+      <form id="course-form">
+        <input type="hidden" id="course-edit-id" value="" />
+        <div class="form-group">
+          <label>Tiêu đề *</label>
+          <input type="text" id="course-title" placeholder="VD: Tư duy hệ thống" required />
+        </div>
+        <div class="form-group">
+          <label>Slug (để trống sẽ tự tạo)</label>
+          <input type="text" id="course-slug" placeholder="tu-duy-he-thong" />
+        </div>
+        <div class="form-group">
+          <label>Mô tả ngắn</label>
+          <textarea id="course-short-desc" placeholder="Mô tả ngắn cho khóa học..." rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Cấp độ</label>
+          <select id="course-level">
+            <option value="basic">Basic</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Visibility</label>
+          <select id="course-visibility">
+            <option value="members">Members</option>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="course-status">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="course-submit-btn">Tạo khóa học</button>
+          <button type="button" class="btn btn-secondary" id="course-reset-btn">Reset</button>
+        </div>
+        <div id="course-msg" class="form-msg hidden"></div>
+      </form>
+    </div>
+
+    <div class="list-card">
+      <div class="list-header">
+        <h3>Danh sách khóa học</h3>
+        <span class="list-count" id="courses-count">—</span>
+      </div>
+      <div id="courses-table-wrap">
+        <div class="loading-state">Đang tải...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: MODULES -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-modules" class="tab-pane">
+  <div class="admin-grid">
+
+    <div class="form-card">
+      <h3 id="module-form-title">Tạo module mới</h3>
+      <form id="module-form">
+        <input type="hidden" id="module-edit-id" value="" />
+        <div class="form-group">
+          <label>Khóa học *</label>
+          <select id="module-course-id" required>
+            <option value="">— Chọn khóa học —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tiêu đề *</label>
+          <input type="text" id="module-title" placeholder="VD: Module 1 — Nền tảng" required />
+        </div>
+        <div class="form-group">
+          <label>Mô tả</label>
+          <textarea id="module-description" placeholder="Mô tả module..." rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Vị trí (position)</label>
+          <input type="number" id="module-position" value="0" min="0" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="module-submit-btn">Tạo module</button>
+          <button type="button" class="btn btn-secondary" id="module-reset-btn">Reset</button>
+        </div>
+        <div id="module-msg" class="form-msg hidden"></div>
+      </form>
+    </div>
+
+    <div class="list-card">
+      <div class="list-header">
+        <h3>Danh sách modules</h3>
+        <span class="list-count" id="modules-count">—</span>
+      </div>
+      <div id="modules-table-wrap">
+        <div class="loading-state">Đang tải...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: TOPICS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-topics" class="tab-pane">
+  <div class="admin-grid">
+
+    <div class="form-card">
+      <h3 id="topic-form-title">Tạo topic mới</h3>
+      <form id="topic-form">
+        <input type="hidden" id="topic-edit-id" value="" />
+        <div class="form-group">
+          <label>Module *</label>
+          <select id="topic-module-id" required>
+            <option value="">— Chọn module —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tiêu đề *</label>
+          <input type="text" id="topic-title" placeholder="VD: Bài 1 — Giới thiệu" required />
+        </div>
+        <div class="form-group">
+          <label>Slug (để trống sẽ tự tạo)</label>
+          <input type="text" id="topic-slug" placeholder="bai-1-gioi-thieu" />
+        </div>
+        <div class="form-group">
+          <label>Mô tả</label>
+          <textarea id="topic-description" placeholder="Mô tả topic..." rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Vị trí (position)</label>
+          <input type="number" id="topic-position" value="0" min="0" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="topic-submit-btn">Tạo topic</button>
+          <button type="button" class="btn btn-secondary" id="topic-reset-btn">Reset</button>
+        </div>
+        <div id="topic-msg" class="form-msg hidden"></div>
+      </form>
+    </div>
+
+    <div class="list-card">
+      <div class="list-header">
+        <h3>Danh sách topics</h3>
+        <span class="list-count" id="topics-count">—</span>
+      </div>
+      <div id="topics-table-wrap">
+        <div class="loading-state">Đang tải...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: LESSONS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-lessons" class="tab-pane">
+  <div class="admin-grid">
+
+    <div class="form-card">
+      <h3 id="lesson-form-title">Tạo bài học mới</h3>
+      <form id="lesson-form">
+        <input type="hidden" id="lesson-edit-id" value="" />
+        <div class="form-group">
+          <label>Topic *</label>
+          <select id="lesson-topic-id" required>
+            <option value="">— Chọn topic —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tiêu đề *</label>
+          <input type="text" id="lesson-title" placeholder="VD: Hiểu về hệ thống" required />
+        </div>
+        <div class="form-group">
+          <label>Slug (để trống sẽ tự tạo)</label>
+          <input type="text" id="lesson-slug" placeholder="hieu-ve-he-thong" />
+        </div>
+        <div class="form-group">
+          <label>Nội dung (Markdown)</label>
+          <textarea id="lesson-content" placeholder="# Tiêu đề bài học&#10;&#10;Nội dung bài học viết ở đây..." rows="6"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Loại bài học</label>
+          <select id="lesson-type">
+            <option value="text">Text</option>
+            <option value="video">Video</option>
+            <option value="audio">Audio</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Completion mode</label>
+          <select id="lesson-completion-mode">
+            <option value="text_only">Text only</option>
+            <option value="video_required">Video required</option>
+            <option value="self">Self</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Thời lượng ước tính (phút)</label>
+          <input type="number" id="lesson-minutes" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Vị trí (position)</label>
+          <input type="number" id="lesson-position" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="lesson-status">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="lesson-submit-btn">Tạo bài học</button>
+          <button type="button" class="btn btn-secondary" id="lesson-reset-btn">Reset</button>
+        </div>
+        <div id="lesson-msg" class="form-msg hidden"></div>
+      </form>
+    </div>
+
+    <div class="list-card">
+      <div class="list-header">
+        <h3>Danh sách bài học</h3>
+        <span class="list-count" id="lessons-count">—</span>
+      </div>
+      <div id="lessons-table-wrap">
+        <div class="loading-state">Đang tải...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: USERS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-users" class="tab-pane">
+  <div class="full-card">
+    <div class="list-header">
+      <h3>Danh sách người dùng</h3>
+      <span class="list-count" id="users-count">—</span>
+    </div>
+    <div id="users-table-wrap">
+      <div class="loading-state">Đang tải...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: PROGRESS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-progress" class="tab-pane">
+  <div class="full-card">
+    <div class="list-header">
+      <h3>Tiến độ học viên</h3>
+      <span class="list-count" id="progress-count">—</span>
+    </div>
+    <div id="progress-table-wrap">
+      <div class="loading-state">Đang tải...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: AUDIT -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-audit" class="tab-pane">
+  <div class="full-card">
+    <div class="list-header">
+      <h3>Audit Logs</h3>
+      <span class="list-count" id="audit-count">—</span>
+    </div>
+    <div id="audit-table-wrap">
+      <div class="loading-state">Đang tải...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TAB: LEDGER -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-ledger" class="tab-pane">
+  <div class="full-card">
+    <div class="list-header">
+      <h3>Ledger Events</h3>
+      <span class="list-count" id="ledger-count">—</span>
+    </div>
+    <div id="ledger-table-wrap">
+      <div class="loading-state">Đang tải...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "https://tueban-api.tranhatam.workers.dev";
+
+// ── Utilities ──────────────────────────────────────────────────────
+
+function qs(sel) { return document.querySelector(sel); }
+function qsa(sel) { return document.querySelectorAll(sel); }
+
+function esc(v) {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function fmtTs(ts) {
+  if (!ts) return "—";
+  return new Date(ts * 1000).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" });
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, {
+    headers: { "Content-Type": "application/json" },
+    ...opts
+  });
+  return res.json();
+}
+
+function showMsg(id, text, type) {
+  const el = qs(`#${id}`);
+  if (!el) return;
+  el.textContent = text;
+  el.className = `form-msg ${type}`;
+}
+
+function setCount(id, n) {
+  const el = qs(`#${id}`);
+  if (el) el.textContent = n;
+}
+
+// ── Tab switching ────────────────────────────────────────────────
+
+const tabLoaded = {};
+
+qsa(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    qsa(".tab-btn").forEach(b => b.classList.remove("active"));
+    qsa(".tab-pane").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    const tabId = btn.dataset.tab;
+    qs(`#tab-${tabId}`).classList.add("active");
+    loadTab(tabId);
+  });
+});
+
+function loadTab(name) {
+  if (tabLoaded[name]) return;
+  tabLoaded[name] = true;
+  switch (name) {
+    case "courses":  loadCourses(); break;
+    case "modules":  loadModulesTab(); break;
+    case "topics":   loadTopicsTab(); break;
+    case "lessons":  loadLessonsTab(); break;
+    case "users":    loadUsers(); break;
+    case "progress": loadProgress(); break;
+    case "audit":    loadAudit(); break;
+    case "ledger":   loadLedger(); break;
+  }
+}
+
+function reloadTab(name) {
+  tabLoaded[name] = false;
+  loadTab(name);
+}
+
+// ── COURSES ──────────────────────────────────────────────────────
+
+let coursesCache = [];
+
+async function loadCourses() {
+  try {
+    const data = await api("/api/admin/courses");
+    coursesCache = data.courses || [];
+    setCount("courses-count", coursesCache.length);
+    renderCoursesTable(coursesCache);
+    updateCourseSelects();
+  } catch (e) {
+    qs("#courses-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+function renderCoursesTable(courses) {
+  if (!courses.length) {
+    qs("#courses-table-wrap").innerHTML = `<div class="empty-state">Chưa có khóa học nào.</div>`;
+    return;
+  }
+  qs("#courses-table-wrap").innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tiêu đề</th>
+          <th>Slug</th>
+          <th>Cấp độ</th>
+          <th>Status</th>
+          <th>Visibility</th>
+          <th>Cập nhật</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${courses.map(c => `
+          <tr>
+            <td><strong>${esc(c.title)}</strong><br/><span style="color:var(--muted);font-size:12px">${esc(c.short_description || "")}</span></td>
+            <td><code style="font-size:12px">${esc(c.slug)}</code></td>
+            <td><span class="badge">${esc(c.level)}</span></td>
+            <td><span class="badge ${esc(c.status)}">${esc(c.status)}</span></td>
+            <td><span class="badge">${esc(c.visibility)}</span></td>
+            <td style="color:var(--muted);font-size:12px">${fmtTs(c.updated_at)}</td>
+            <td><button class="edit-btn" onclick="editCourse(${JSON.stringify(c)})">Sửa</button></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function editCourse(c) {
+  qs("#course-edit-id").value = c.id;
+  qs("#course-title").value = c.title || "";
+  qs("#course-slug").value = c.slug || "";
+  qs("#course-short-desc").value = c.short_description || "";
+  qs("#course-level").value = c.level || "basic";
+  qs("#course-visibility").value = c.visibility || "members";
+  qs("#course-status").value = c.status || "draft";
+  qs("#course-form-title").textContent = "Sửa khóa học";
+  qs("#course-submit-btn").textContent = "Lưu thay đổi";
+  qs("#course-msg").className = "form-msg hidden";
+  qs("#course-title").focus();
+}
+
+qs("#course-reset-btn").addEventListener("click", () => {
+  qs("#course-form").reset();
+  qs("#course-edit-id").value = "";
+  qs("#course-form-title").textContent = "Tạo khóa học mới";
+  qs("#course-submit-btn").textContent = "Tạo khóa học";
+  qs("#course-msg").className = "form-msg hidden";
+});
+
+qs("#course-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const editId = qs("#course-edit-id").value.trim();
+  const payload = {
+    title: qs("#course-title").value,
+    slug: qs("#course-slug").value,
+    short_description: qs("#course-short-desc").value,
+    level: qs("#course-level").value,
+    visibility: qs("#course-visibility").value,
+    status: qs("#course-status").value,
+  };
+
+  const btn = qs("#course-submit-btn");
+  btn.disabled = true;
+
+  try {
+    let data;
+    if (editId) {
+      data = await api(`/api/admin/courses/${editId}`, { method: "PATCH", body: JSON.stringify(payload) });
+    } else {
+      data = await api("/api/admin/courses", { method: "POST", body: JSON.stringify(payload) });
+    }
+
+    if (data.ok) {
+      showMsg("course-msg", editId ? "Đã lưu thay đổi." : `Tạo thành công: ${data.course?.slug}`, "ok");
+      qs("#course-form").reset();
+      qs("#course-edit-id").value = "";
+      qs("#course-form-title").textContent = "Tạo khóa học mới";
+      qs("#course-submit-btn").textContent = "Tạo khóa học";
+      reloadTab("courses");
+    } else {
+      showMsg("course-msg", data.error || "Có lỗi xảy ra.", "err");
+    }
+  } catch (err) {
+    showMsg("course-msg", String(err), "err");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ── MODULES ──────────────────────────────────────────────────────
+
+let modulesCache = [];
+
+async function loadModulesTab() {
+  await loadCoursesIfNeeded();
+  await loadModules();
+}
+
+async function loadCoursesIfNeeded() {
+  if (!coursesCache.length) {
+    try {
+      const data = await api("/api/admin/courses");
+      coursesCache = data.courses || [];
+      updateCourseSelects();
+    } catch {}
+  }
+}
+
+function updateCourseSelects() {
+  const sel = qs("#module-course-id");
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = `<option value="">— Chọn khóa học —</option>` +
+    coursesCache.map(c => `<option value="${esc(c.id)}" ${c.id === current ? "selected" : ""}>${esc(c.title)}</option>`).join("");
+}
+
+async function loadModules() {
+  try {
+    const data = await api("/api/admin/modules");
+    modulesCache = data.modules || [];
+    setCount("modules-count", modulesCache.length);
+    renderModulesTable(modulesCache);
+    updateModuleSelects();
+  } catch (e) {
+    qs("#modules-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+function renderModulesTable(modules) {
+  if (!modules.length) {
+    qs("#modules-table-wrap").innerHTML = `<div class="empty-state">Chưa có module nào.</div>`;
+    return;
+  }
+  qs("#modules-table-wrap").innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr><th>Tiêu đề</th><th>Khóa học</th><th>Position</th><th>Cập nhật</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${modules.map(m => `
+          <tr>
+            <td><strong>${esc(m.title)}</strong><br/><span style="color:var(--muted);font-size:12px">${esc(m.description || "")}</span></td>
+            <td style="color:var(--muted)">${esc(m.course_title)}</td>
+            <td>${esc(String(m.position))}</td>
+            <td style="color:var(--muted);font-size:12px">${fmtTs(m.updated_at)}</td>
+            <td><button class="edit-btn" onclick="editModule(${JSON.stringify(m)})">Sửa</button></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function editModule(m) {
+  qs("#module-edit-id").value = m.id;
+  qs("#module-course-id").value = m.course_id || "";
+  qs("#module-title").value = m.title || "";
+  qs("#module-description").value = m.description || "";
+  qs("#module-position").value = m.position ?? 0;
+  qs("#module-form-title").textContent = "Sửa module";
+  qs("#module-submit-btn").textContent = "Lưu thay đổi";
+  qs("#module-msg").className = "form-msg hidden";
+  qs("#module-title").focus();
+}
+
+qs("#module-reset-btn").addEventListener("click", () => {
+  qs("#module-form").reset();
+  qs("#module-edit-id").value = "";
+  qs("#module-form-title").textContent = "Tạo module mới";
+  qs("#module-submit-btn").textContent = "Tạo module";
+  qs("#module-msg").className = "form-msg hidden";
+});
+
+qs("#module-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const editId = qs("#module-edit-id").value.trim();
+  const payload = {
+    course_id: qs("#module-course-id").value,
+    title: qs("#module-title").value,
+    description: qs("#module-description").value,
+    position: parseInt(qs("#module-position").value) || 0,
+  };
+
+  const btn = qs("#module-submit-btn");
+  btn.disabled = true;
+
+  try {
+    let data;
+    if (editId) {
+      data = await api(`/api/admin/modules/${editId}`, { method: "PATCH", body: JSON.stringify(payload) });
+    } else {
+      data = await api("/api/admin/modules", { method: "POST", body: JSON.stringify(payload) });
+    }
+
+    if (data.ok) {
+      showMsg("module-msg", editId ? "Đã lưu thay đổi." : "Tạo module thành công.", "ok");
+      qs("#module-form").reset();
+      qs("#module-edit-id").value = "";
+      qs("#module-form-title").textContent = "Tạo module mới";
+      qs("#module-submit-btn").textContent = "Tạo module";
+      reloadTab("modules");
+    } else {
+      showMsg("module-msg", data.error || "Có lỗi xảy ra.", "err");
+    }
+  } catch (err) {
+    showMsg("module-msg", String(err), "err");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ── TOPICS ───────────────────────────────────────────────────────
+
+let topicsCache = [];
+
+async function loadTopicsTab() {
+  await loadModulesIfNeeded();
+  await loadTopics();
+}
+
+async function loadModulesIfNeeded() {
+  if (!modulesCache.length) {
+    try {
+      const data = await api("/api/admin/modules");
+      modulesCache = data.modules || [];
+      updateModuleSelects();
+    } catch {}
+  }
+}
+
+function updateModuleSelects() {
+  const sel = qs("#topic-module-id");
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = `<option value="">— Chọn module —</option>` +
+    modulesCache.map(m => `<option value="${esc(m.id)}" ${m.id === current ? "selected" : ""}>${esc(m.course_title)} / ${esc(m.title)}</option>`).join("");
+}
+
+async function loadTopics() {
+  try {
+    const data = await api("/api/admin/topics");
+    topicsCache = data.topics || [];
+    setCount("topics-count", topicsCache.length);
+    renderTopicsTable(topicsCache);
+    updateTopicSelects();
+  } catch (e) {
+    qs("#topics-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+function renderTopicsTable(topics) {
+  if (!topics.length) {
+    qs("#topics-table-wrap").innerHTML = `<div class="empty-state">Chưa có topic nào.</div>`;
+    return;
+  }
+  qs("#topics-table-wrap").innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr><th>Tiêu đề</th><th>Slug</th><th>Module / Course</th><th>Position</th><th>Cập nhật</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${topics.map(t => `
+          <tr>
+            <td><strong>${esc(t.title)}</strong></td>
+            <td><code style="font-size:12px">${esc(t.slug)}</code></td>
+            <td style="color:var(--muted);font-size:12px">${esc(t.module_title)} / ${esc(t.course_title)}</td>
+            <td>${esc(String(t.position))}</td>
+            <td style="color:var(--muted);font-size:12px">${fmtTs(t.updated_at)}</td>
+            <td><button class="edit-btn" onclick="editTopic(${JSON.stringify(t)})">Sửa</button></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function editTopic(t) {
+  qs("#topic-edit-id").value = t.id;
+  qs("#topic-module-id").value = t.module_id || "";
+  qs("#topic-title").value = t.title || "";
+  qs("#topic-slug").value = t.slug || "";
+  qs("#topic-description").value = t.description || "";
+  qs("#topic-position").value = t.position ?? 0;
+  qs("#topic-form-title").textContent = "Sửa topic";
+  qs("#topic-submit-btn").textContent = "Lưu thay đổi";
+  qs("#topic-msg").className = "form-msg hidden";
+  qs("#topic-title").focus();
+}
+
+qs("#topic-reset-btn").addEventListener("click", () => {
+  qs("#topic-form").reset();
+  qs("#topic-edit-id").value = "";
+  qs("#topic-form-title").textContent = "Tạo topic mới";
+  qs("#topic-submit-btn").textContent = "Tạo topic";
+  qs("#topic-msg").className = "form-msg hidden";
+});
+
+qs("#topic-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const editId = qs("#topic-edit-id").value.trim();
+  const payload = {
+    module_id: qs("#topic-module-id").value,
+    title: qs("#topic-title").value,
+    slug: qs("#topic-slug").value,
+    description: qs("#topic-description").value,
+    position: parseInt(qs("#topic-position").value) || 0,
+  };
+
+  const btn = qs("#topic-submit-btn");
+  btn.disabled = true;
+
+  try {
+    let data;
+    if (editId) {
+      data = await api(`/api/admin/topics/${editId}`, { method: "PATCH", body: JSON.stringify(payload) });
+    } else {
+      data = await api("/api/admin/topics", { method: "POST", body: JSON.stringify(payload) });
+    }
+
+    if (data.ok) {
+      showMsg("topic-msg", editId ? "Đã lưu thay đổi." : `Tạo thành công: ${data.topic?.slug}`, "ok");
+      qs("#topic-form").reset();
+      qs("#topic-edit-id").value = "";
+      qs("#topic-form-title").textContent = "Tạo topic mới";
+      qs("#topic-submit-btn").textContent = "Tạo topic";
+      reloadTab("topics");
+    } else {
+      showMsg("topic-msg", data.error || "Có lỗi xảy ra.", "err");
+    }
+  } catch (err) {
+    showMsg("topic-msg", String(err), "err");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ── LESSONS ──────────────────────────────────────────────────────
+
+async function loadLessonsTab() {
+  await loadTopicsIfNeeded();
+  await loadLessons();
+}
+
+async function loadTopicsIfNeeded() {
+  if (!topicsCache.length) {
+    try {
+      const data = await api("/api/admin/topics");
+      topicsCache = data.topics || [];
+      updateTopicSelects();
+    } catch {}
+  }
+}
+
+function updateTopicSelects() {
+  const sel = qs("#lesson-topic-id");
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = `<option value="">— Chọn topic —</option>` +
+    topicsCache.map(t => `<option value="${esc(t.id)}" ${t.id === current ? "selected" : ""}>${esc(t.course_title)} / ${esc(t.module_title)} / ${esc(t.title)}</option>`).join("");
+}
+
+async function loadLessons() {
+  try {
+    const data = await api("/api/admin/lessons");
+    const lessons = data.lessons || [];
+    setCount("lessons-count", lessons.length);
+    renderLessonsTable(lessons);
+  } catch (e) {
+    qs("#lessons-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+function renderLessonsTable(lessons) {
+  if (!lessons.length) {
+    qs("#lessons-table-wrap").innerHTML = `<div class="empty-state">Chưa có bài học nào.</div>`;
+    return;
+  }
+  qs("#lessons-table-wrap").innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr><th>Tiêu đề</th><th>Slug</th><th>Topic / Course</th><th>Type</th><th>Status</th><th>Phút</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${lessons.map(l => `
+          <tr>
+            <td><strong>${esc(l.title)}</strong></td>
+            <td><code style="font-size:12px">${esc(l.slug)}</code></td>
+            <td style="color:var(--muted);font-size:12px">${esc(l.topic_title)} / ${esc(l.course_title)}</td>
+            <td><span class="badge">${esc(l.lesson_type)}</span></td>
+            <td><span class="badge ${esc(l.status)}">${esc(l.status)}</span></td>
+            <td style="color:var(--muted)">${esc(String(l.estimated_minutes || 0))}</td>
+            <td><button class="edit-btn" onclick="editLesson(${JSON.stringify(l)})">Sửa</button></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function editLesson(l) {
+  qs("#lesson-edit-id").value = l.id;
+  qs("#lesson-topic-id").value = l.topic_id || "";
+  qs("#lesson-title").value = l.title || "";
+  qs("#lesson-slug").value = l.slug || "";
+  qs("#lesson-content").value = l.content_md || "";
+  qs("#lesson-type").value = l.lesson_type || "text";
+  qs("#lesson-completion-mode").value = l.completion_mode || "text_only";
+  qs("#lesson-minutes").value = l.estimated_minutes ?? 0;
+  qs("#lesson-position").value = l.position ?? 0;
+  qs("#lesson-status").value = l.status || "draft";
+  qs("#lesson-form-title").textContent = "Sửa bài học";
+  qs("#lesson-submit-btn").textContent = "Lưu thay đổi";
+  qs("#lesson-msg").className = "form-msg hidden";
+  qs("#lesson-title").focus();
+}
+
+qs("#lesson-reset-btn").addEventListener("click", () => {
+  qs("#lesson-form").reset();
+  qs("#lesson-edit-id").value = "";
+  qs("#lesson-form-title").textContent = "Tạo bài học mới";
+  qs("#lesson-submit-btn").textContent = "Tạo bài học";
+  qs("#lesson-msg").className = "form-msg hidden";
+});
+
+qs("#lesson-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const editId = qs("#lesson-edit-id").value.trim();
+  const payload = {
+    topic_id: qs("#lesson-topic-id").value,
+    title: qs("#lesson-title").value,
+    slug: qs("#lesson-slug").value,
+    content_md: qs("#lesson-content").value,
+    lesson_type: qs("#lesson-type").value,
+    completion_mode: qs("#lesson-completion-mode").value,
+    estimated_minutes: parseInt(qs("#lesson-minutes").value) || 0,
+    position: parseInt(qs("#lesson-position").value) || 0,
+    status: qs("#lesson-status").value,
+  };
+
+  const btn = qs("#lesson-submit-btn");
+  btn.disabled = true;
+
+  try {
+    let data;
+    if (editId) {
+      data = await api(`/api/admin/lessons/${editId}`, { method: "PATCH", body: JSON.stringify(payload) });
+    } else {
+      data = await api("/api/admin/lessons", { method: "POST", body: JSON.stringify(payload) });
+    }
+
+    if (data.ok) {
+      showMsg("lesson-msg", editId ? "Đã lưu thay đổi." : `Tạo thành công: ${data.lesson?.slug}`, "ok");
+      qs("#lesson-form").reset();
+      qs("#lesson-edit-id").value = "";
+      qs("#lesson-form-title").textContent = "Tạo bài học mới";
+      qs("#lesson-submit-btn").textContent = "Tạo bài học";
+      reloadTab("lessons");
+    } else {
+      showMsg("lesson-msg", data.error || "Có lỗi xảy ra.", "err");
+    }
+  } catch (err) {
+    showMsg("lesson-msg", String(err), "err");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ── USERS ────────────────────────────────────────────────────────
+
+async function loadUsers() {
+  try {
+    const data = await api("/api/admin/users");
+    const users = data.users || [];
+    setCount("users-count", users.length);
+
+    if (!users.length) {
+      qs("#users-table-wrap").innerHTML = `<div class="empty-state">Chưa có người dùng nào.</div>`;
+      return;
+    }
+
+    qs("#users-table-wrap").innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Email</th><th>Họ tên</th><th>Roles</th><th>Status</th><th>Ngày tạo</th></tr>
+        </thead>
+        <tbody>
+          ${users.map(u => `
+            <tr>
+              <td>${esc(u.email)}</td>
+              <td>${esc(u.full_name || "—")}</td>
+              <td>${(u.roles || "").split(",").filter(Boolean).map(r => `<span class="badge">${esc(r)}</span> `).join("")}</td>
+              <td><span class="badge ${esc(u.status)}">${esc(u.status)}</span></td>
+              <td style="color:var(--muted);font-size:12px">${fmtTs(u.created_at)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (e) {
+    qs("#users-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────
+
+async function loadProgress() {
+  try {
+    const data = await api("/api/admin/progress");
+    const progresses = data.progresses || [];
+    setCount("progress-count", progresses.length);
+
+    if (!progresses.length) {
+      qs("#progress-table-wrap").innerHTML = `<div class="empty-state">Chưa có dữ liệu tiến độ.</div>`;
+      return;
+    }
+
+    qs("#progress-table-wrap").innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Email học viên</th><th>Bài học</th><th>Khóa học</th><th>Status</th><th>Hoàn thành lúc</th></tr>
+        </thead>
+        <tbody>
+          ${progresses.map(p => `
+            <tr>
+              <td>${esc(p.user_email)}</td>
+              <td>${esc(p.lesson_title)}<br/><code style="font-size:11px;color:var(--muted)">${esc(p.lesson_slug)}</code></td>
+              <td style="color:var(--muted)">${esc(p.course_title)}</td>
+              <td><span class="badge ${esc(p.status)}">${esc(p.status)}</span></td>
+              <td style="color:var(--muted);font-size:12px">${fmtTs(p.completed_at)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (e) {
+    qs("#progress-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+// ── AUDIT ────────────────────────────────────────────────────────
+
+async function loadAudit() {
+  try {
+    const data = await api("/api/admin/audit");
+    const logs = data.audit_logs || [];
+    setCount("audit-count", logs.length);
+
+    if (!logs.length) {
+      qs("#audit-table-wrap").innerHTML = `<div class="empty-state">Chưa có audit log nào.</div>`;
+      return;
+    }
+
+    qs("#audit-table-wrap").innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Actor</th><th>Action</th><th>Target</th><th>Details</th><th>Thời gian</th></tr>
+        </thead>
+        <tbody>
+          ${logs.map(l => `
+            <tr>
+              <td style="font-size:12px">${esc(l.actor_email || l.actor_user_id)}</td>
+              <td><span class="badge">${esc(l.action_type)}</span></td>
+              <td style="font-size:12px">${esc(l.target_type)} / <code>${esc(l.target_id)}</code></td>
+              <td style="color:var(--muted);font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis">${esc(l.details_json || "")}</td>
+              <td style="color:var(--muted);font-size:12px">${fmtTs(l.created_at)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (e) {
+    qs("#audit-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+// ── LEDGER ───────────────────────────────────────────────────────
+
+async function loadLedger() {
+  try {
+    const data = await api("/api/admin/ledger");
+    const events = data.ledger_events || [];
+    setCount("ledger-count", events.length);
+
+    if (!events.length) {
+      qs("#ledger-table-wrap").innerHTML = `<div class="empty-state">Chưa có ledger event nào.</div>`;
+      return;
+    }
+
+    qs("#ledger-table-wrap").innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr><th>Event type</th><th>Actor</th><th>Target</th><th>Payload</th><th>Thời gian</th></tr>
+        </thead>
+        <tbody>
+          ${events.map(e => `
+            <tr>
+              <td><span class="badge">${esc(e.event_type)}</span></td>
+              <td style="font-size:12px">${esc(e.actor_email || e.actor_user_id)}</td>
+              <td style="font-size:12px">${esc(e.target_type)} / <code>${esc(e.target_id)}</code></td>
+              <td style="color:var(--muted);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis">${esc(e.payload_json || "")}</td>
+              <td style="color:var(--muted);font-size:12px">${fmtTs(e.created_at)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (e) {
+    qs("#ledger-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+
+loadTab("courses");
+</script>
+
+</body>
+</html>

@@ -10,9 +10,10 @@ import { courseDetailRoute } from "./routes/course";
 import { lessonDetailRoute } from "./routes/lessons";
 import { progressRoute } from "./routes/progress";
 import { completeLessonRoute } from "./routes/lesson-actions";
+import { adminRoute, type AdminEnv } from "./routes/admin";
 import { json } from "./lib/json";
 
-export interface Env extends SystemEnv {}
+export interface Env extends SystemEnv, AdminEnv {}
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -78,6 +79,14 @@ export default {
 
     if (method === "POST" && pathname === "/api/lesson/complete") {
       return completeLessonRoute(request, env);
+    }
+
+    if (
+      segments.length >= 3 &&
+      segments[0] === "api" &&
+      segments[1] === "admin"
+    ) {
+      return adminRoute(request, env, segments);
     }
 
     return json(
