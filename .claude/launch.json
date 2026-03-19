@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web (static — port 8788)",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4000", "--directory", "apps/web/public"],
+      "port": 4000,
+      "autoPort": false
+    },
+    {
+      "name": "api (wrangler dev — port 8787)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "dev"],
+      "port": 8787
+    }
+  ]
+}
