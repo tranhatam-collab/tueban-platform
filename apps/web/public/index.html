@@ -3,85 +3,165 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tueban.com | Learning Operating System</title>
-  <meta
-    name="description"
-    content="Tueban.com là nền tảng học tập có tiến trình, có bằng chứng, có kỷ luật học tập và vận hành tri thức theo hệ thống."
-  />
-  <meta name="theme-color" content="#0b0b0c" />
+  <title>Tueban.com — Learning Operating System</title>
+  <meta name="description" content="Tueban là nền tảng học tập có tiến trình thật, bằng chứng thật, kỷ luật thật — từ nhận thức đến thực hành." />
+  <meta name="theme-color" content="#08080a" />
   <link rel="canonical" href="https://tueban.com/" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
-<body>
-  <main class="page-shell">
-    <header class="page-header">
-      <div class="status">Tueban.com • Learning Operating System</div>
-      <h1>Học tập có tiến trình, có bằng chứng, có hệ thống</h1>
-      <p class="muted">
-        Tueban là nền tảng học tập giúp người học đi từ nhận thức đến thực hành,
-        từ bài học đến tiến độ, từ nội dung đến lịch sử hoàn thành. Toàn bộ dữ liệu
-        khóa học, lesson, progress và complete lesson đang được kết nối trực tiếp với
-        Worker API và D1 database của hệ thống.
-      </p>
-    </header>
+<body class="page-body">
 
-    <section class="grid-list">
-      <article class="card">
-        <div class="status">Bắt đầu</div>
-        <h2>Danh sách khóa học</h2>
-        <p class="muted">
-          Xem toàn bộ khóa học hiện có trên hệ thống Tueban.
+<!-- ── NAV ──────────────────────────────────────────────────────── -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-logo">T</span>
+      <span class="nav-brand-name">Tueban</span>
+      <span class="nav-brand-tag">Learning OS</span>
+    </a>
+    <div class="nav-links">
+      <a href="/courses.html">Khóa học</a>
+      <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+      <a href="/lesson.html?slug=bai-1-mo-dau">Lesson mẫu</a>
+      <a href="/admin.html" class="nav-cta">Admin CMS</a>
+    </div>
+    <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Mở menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── DRAWER ────────────────────────────────────────────────────── -->
+<div class="nav-drawer" id="nav-drawer">
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-top">
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">T</span>
+        <span class="nav-brand-name">Tueban</span>
+      </a>
+      <button class="drawer-close-btn" id="drawer-close">✕</button>
+    </div>
+    <a class="drawer-link" href="/">Trang chủ</a>
+    <a class="drawer-link" href="/courses.html">Khóa học</a>
+    <a class="drawer-link" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+    <a class="drawer-link" href="/lesson.html?slug=bai-1-mo-dau">Lesson mẫu</a>
+    <a class="drawer-link" href="/admin.html">Admin CMS</a>
+    <a class="drawer-link drawer-cta" href="/courses.html">Bắt đầu học →</a>
+  </div>
+</div>
+
+<!-- ── HERO ──────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="shell">
+    <div class="hero-eyebrow">Learning Operating System</div>
+    <h1 class="hero-headline">
+      Học tập có tiến trình,<br>
+      có bằng chứng,<br>
+      có hệ thống.
+    </h1>
+    <p class="hero-sub">
+      Tueban không chỉ là nơi đặt bài học. Đây là nền tảng học tập giúp người học
+      đi từ nhận thức đến thực hành, từ bài học đến tiến độ,
+      từ nội dung đến lịch sử hoàn thành.
+    </p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="/courses.html">Mở danh sách khóa học →</a>
+      <a class="btn-ghost" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Xem course mẫu</a>
+    </div>
+    <div class="hero-stack">
+      <span class="stack-pill">Backend Cloudflare Workers + D1 + R2</span>
+      <span class="stack-pill">Frontend Pages + Mobile-first web app</span>
+      <span class="stack-pill">Logic Course · Lesson · Progress · Complete</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ──────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="shell">
+    <div class="sec-label">Lối vào chính</div>
+    <h2 class="sec-title">Hệ thống đang chạy thật</h2>
+    <p class="sec-sub">
+      Toàn bộ course, lesson, progress và complete lesson đang được kết nối
+      trực tiếp với Worker API và D1 database của hệ thống.
+    </p>
+    <div class="cards-3">
+      <a class="feature-card" href="/courses.html">
+        <div class="feature-card-icon">📚</div>
+        <h3>Danh sách khóa học</h3>
+        <p>Đi vào tất cả khóa học hiện có. Dữ liệu thật từ D1 database.</p>
+        <div class="feature-card-cta">Xem ngay →</div>
+      </a>
+      <a class="feature-card" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">
+        <div class="feature-card-icon">🎓</div>
+        <h3>Nhập Môn Trí Tuệ Vận Hành</h3>
+        <p>Khóa học mẫu với đầy đủ module, topic, lesson thật đã seed vào D1.</p>
+        <div class="feature-card-cta">Mở khóa học →</div>
+      </a>
+      <a class="feature-card" href="/lesson.html?slug=bai-1-mo-dau">
+        <div class="feature-card-icon">📖</div>
+        <h3>Bài 1: Mở Đầu</h3>
+        <p>Xem nội dung lesson, tài liệu đính kèm và hoàn thành bài học thật.</p>
+        <div class="feature-card-cta">Mở bài học →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── ARCHITECTURE ───────────────────────────────────────────────── -->
+<section class="section">
+  <div class="shell">
+    <div class="sec-label">Kiến trúc</div>
+    <h2 class="sec-title">Xây như một hệ điều hành học tập</h2>
+    <p class="sec-sub">
+      Không phải demo page. Không phải landing page.
+      Tueban là learning operating system thật — có dữ liệu, có logic, có admin.
+    </p>
+    <div class="cards-3">
+      <div class="card">
+        <div class="tag accent" style="margin-bottom:16px">Infrastructure</div>
+        <h3 style="margin-bottom:10px">Cloudflare Edge Stack</h3>
+        <p class="muted" style="font-size:14px;line-height:1.7">
+          Workers · D1 · R2 · Pages · Queues.<br>
+          Toàn bộ chạy trên Cloudflare edge — không server truyền thống.
         </p>
-        <div class="actions">
-          <a class="btn" href="/courses.html">Mở trang khóa học</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <div class="status">Khóa học mẫu</div>
-        <h2>Nhập Môn Trí Tuệ Vận Hành</h2>
-        <p class="muted">
-          Đi vào khóa học mẫu đã seed trong D1 để kiểm tra outline, topic và lesson thật.
-        </p>
-        <div class="actions">
-          <a class="btn" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Mở khóa học mẫu</a>
-        </div>
-      </article>
-
-      <article class="card">
-        <div class="status">Lesson mẫu</div>
-        <h2>Bài 1: Mở Đầu</h2>
-        <p class="muted">
-          Xem nội dung lesson thật, tài liệu đính kèm và nút hoàn thành bài học.
-        </p>
-        <div class="actions">
-          <a class="btn" href="/lesson.html?slug=bai-1-mo-dau">Mở bài học mẫu</a>
-        </div>
-      </article>
-    </section>
-
-    <section class="debug-panel">
-      <h2>Đi nhanh trong hệ thống</h2>
-      <div class="stack">
-        <div class="card">
-          <p><strong>Trang chủ:</strong> <a href="https://tueban.com/">https://tueban.com/</a></p>
-          <p><strong>Khóa học:</strong> <a href="https://tueban.com/courses.html">https://tueban.com/courses.html</a></p>
-          <p><strong>Course mẫu:</strong> <a href="https://tueban.com/course.html?slug=nhap-mon-tri-tue-van-hanh">https://tueban.com/course.html?slug=nhap-mon-tri-tue-van-hanh</a></p>
-          <p><strong>Lesson mẫu:</strong> <a href="https://tueban.com/lesson.html?slug=bai-1-mo-dau">https://tueban.com/lesson.html?slug=bai-1-mo-dau</a></p>
-        </div>
-
-        <div class="card">
-          <h3>Trạng thái hiện tại của hệ thống</h3>
-          <p class="muted">
-            Backend Worker đã chạy, D1 schema đã tạo, seed data đã vào database,
-            route course và lesson đang hoạt động, frontend học viên đã đọc được dữ liệu thật.
-          </p>
-        </div>
       </div>
-    </section>
-  </main>
+      <div class="card">
+        <div class="tag accent" style="margin-bottom:16px">Data</div>
+        <h3 style="margin-bottom:10px">Schema chuẩn hóa</h3>
+        <p class="muted" style="font-size:14px;line-height:1.7">
+          Course · Module · Topic · Lesson · Progress · Ledger · Audit.<br>
+          Đầy đủ, versioned, có seed data thật.
+        </p>
+      </div>
+      <div class="card">
+        <div class="tag accent" style="margin-bottom:16px">Operations</div>
+        <h3 style="margin-bottom:10px">Admin CMS</h3>
+        <p class="muted" style="font-size:14px;line-height:1.7">
+          Tạo, sửa, quản lý toàn bộ nội dung.<br>
+          Xem progress học viên, ledger event, audit log thật.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script src="/assets/app.js"></script>
+<!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="shell">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Tueban.com — Learning Operating System</span>
+      <div class="footer-links">
+        <a href="/courses.html">Khóa học</a>
+        <a href="/admin.html">Admin CMS</a>
+        <a href="/api/health">API Health</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/app.js"></script>
 </body>
 </html>

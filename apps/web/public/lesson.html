@@ -3,57 +3,121 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bài học | Tueban</title>
+  <title>Bài học — Tueban</title>
   <meta name="description" content="Chi tiết bài học Tueban" />
+  <meta name="theme-color" content="#08080a" />
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
-<body>
-  <main class="page-shell">
-    <header class="page-header">
-      <a class="back-link" href="/courses.html">← Quay lại khóa học</a>
-      <div class="status" id="lesson-slug">slug</div>
-      <h1 id="lesson-title">Đang tải bài học...</h1>
-      <p id="lesson-course" class="muted">Đang tải course/topic...</p>
-      <p id="lesson-meta" class="muted">Đang tải meta...</p>
-    </header>
+<body class="page-body">
 
-    <section class="two-col">
-      <article class="card lesson-content">
-        <div id="lesson-body">Đang tải nội dung...</div>
-      </article>
+<!-- ── NAV ──────────────────────────────────────────────────────── -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-logo">T</span>
+      <span class="nav-brand-name">Tueban</span>
+      <span class="nav-brand-tag">Learning OS</span>
+    </a>
+    <div class="nav-links">
+      <a href="/courses.html">Khóa học</a>
+      <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+      <a href="/lesson.html?slug=bai-1-mo-dau" class="active">Lesson mẫu</a>
+      <a href="/admin.html" class="nav-cta">Admin CMS</a>
+    </div>
+    <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Mở menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-      <aside class="stack">
-        <section>
-          <h2>Tài liệu đính kèm</h2>
-          <div id="lesson-assets" class="stack">
-            <div class="card">Đang tải tài liệu...</div>
-          </div>
-        </section>
+<!-- ── DRAWER ────────────────────────────────────────────────────── -->
+<div class="nav-drawer" id="nav-drawer">
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-top">
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">T</span>
+        <span class="nav-brand-name">Tueban</span>
+      </a>
+      <button class="drawer-close-btn" id="drawer-close">✕</button>
+    </div>
+    <a class="drawer-link" href="/">Trang chủ</a>
+    <a class="drawer-link" href="/courses.html">Khóa học</a>
+    <a class="drawer-link" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+    <a class="drawer-link" href="/lesson.html?slug=bai-1-mo-dau">Lesson mẫu</a>
+    <a class="drawer-link" href="/admin.html">Admin CMS</a>
+    <a class="drawer-link drawer-cta" href="/courses.html">Bắt đầu học →</a>
+  </div>
+</div>
 
-        <section>
-          <h2>Hành động</h2>
-          <div class="card stack">
-            <button id="complete-lesson-btn" class="btn" type="button" disabled>
-              Hoàn thành bài học
-            </button>
-            <pre id="lesson-complete-result" class="output">Chưa thực hiện.</pre>
-          </div>
-        </section>
+<!-- ── CONTENT ───────────────────────────────────────────────────── -->
+<div class="shell">
+  <div class="page-header">
+    <a class="back-link" href="/courses.html">← Quay lại khóa học</a>
+    <div class="status" id="lesson-slug" style="margin-bottom:12px">Đang tải...</div>
+    <h1 id="lesson-title">Đang tải bài học...</h1>
+    <p id="lesson-course" class="muted" style="margin-top:8px;font-size:14px"></p>
+    <p id="lesson-meta" class="muted" style="margin-top:4px;font-size:13px"></p>
+  </div>
 
-        <section>
-          <h2>Progress học viên mẫu</h2>
-          <div id="progress-summary"></div>
-          <pre id="progress-output" class="output">Đang chờ dữ liệu...</pre>
-        </section>
-      </aside>
-    </section>
+  <div class="two-col">
+    <!-- Main content -->
+    <article class="card lesson-content" id="lesson-body">
+      <div class="state-loading">Đang tải nội dung bài học...</div>
+    </article>
 
-    <section class="debug-panel">
-      <h2>Lesson API Output</h2>
-      <pre id="lesson-output" class="output">Đang chờ dữ liệu...</pre>
-    </section>
-  </main>
+    <!-- Sidebar -->
+    <aside class="stack">
 
-  <script src="/assets/app.js"></script>
+      <!-- Assets -->
+      <div class="card">
+        <h3 style="margin-bottom:14px;font-size:15px">Tài liệu đính kèm</h3>
+        <div id="lesson-assets" class="stack-sm">
+          <div class="state-loading" style="padding:24px 0;font-size:14px">Đang tải tài liệu...</div>
+        </div>
+      </div>
+
+      <!-- Complete -->
+      <div class="card stack-sm">
+        <h3 style="font-size:15px">Hoàn thành bài học</h3>
+        <p class="muted" style="font-size:13px;line-height:1.6">
+          Nhấn để ghi nhận tiến độ vào hệ thống và cập nhật ledger.
+        </p>
+        <button id="complete-lesson-btn" class="btn btn-accent" type="button" disabled>
+          Hoàn thành bài học
+        </button>
+        <pre id="lesson-complete-result" class="output" style="min-height:48px">Chưa thực hiện.</pre>
+      </div>
+
+      <!-- Progress -->
+      <div class="card">
+        <h3 style="margin-bottom:14px;font-size:15px">Progress học viên</h3>
+        <div id="progress-summary"></div>
+        <pre id="progress-output" class="output" style="margin-top:12px">Đang chờ dữ liệu...</pre>
+      </div>
+
+    </aside>
+  </div>
+
+  <div class="debug-panel">
+    <h2>Lesson API Output</h2>
+    <pre id="lesson-output" class="output">Đang chờ dữ liệu...</pre>
+  </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="shell">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Tueban.com — Learning Operating System</span>
+      <div class="footer-links">
+        <a href="/">Trang chủ</a>
+        <a href="/courses.html">Khóa học</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/app.js"></script>
 </body>
 </html>

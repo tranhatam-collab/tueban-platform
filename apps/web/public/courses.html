@@ -3,28 +3,86 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Khóa học | Tueban</title>
-  <meta name="description" content="Danh sách khóa học Tueban" />
+  <title>Khóa học — Tueban</title>
+  <meta name="description" content="Danh sách khóa học trên Tueban Learning OS" />
+  <meta name="theme-color" content="#08080a" />
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
-<body>
-  <main class="page-shell">
-    <header class="page-header">
-      <a class="back-link" href="/">← Trang chủ</a>
-      <h1>Danh sách khóa học</h1>
-      <p class="muted">Trang này đọc dữ liệu thật từ API <code>/api/courses</code>.</p>
-    </header>
+<body class="page-body">
 
-    <section id="courses-list" class="grid-list">
-      <div class="card">Đang tải danh sách khóa học...</div>
-    </section>
+<!-- ── NAV ──────────────────────────────────────────────────────── -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-logo">T</span>
+      <span class="nav-brand-name">Tueban</span>
+      <span class="nav-brand-tag">Learning OS</span>
+    </a>
+    <div class="nav-links">
+      <a href="/courses.html" class="active">Khóa học</a>
+      <a href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+      <a href="/lesson.html?slug=bai-1-mo-dau">Lesson mẫu</a>
+      <a href="/admin.html" class="nav-cta">Admin CMS</a>
+    </div>
+    <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Mở menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-    <section class="debug-panel">
-      <h2>API Output</h2>
-      <pre id="courses-output" class="output">Đang chờ dữ liệu...</pre>
-    </section>
-  </main>
+<!-- ── DRAWER ────────────────────────────────────────────────────── -->
+<div class="nav-drawer" id="nav-drawer">
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-top">
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">T</span>
+        <span class="nav-brand-name">Tueban</span>
+      </a>
+      <button class="drawer-close-btn" id="drawer-close">✕</button>
+    </div>
+    <a class="drawer-link" href="/">Trang chủ</a>
+    <a class="drawer-link" href="/courses.html">Khóa học</a>
+    <a class="drawer-link" href="/course.html?slug=nhap-mon-tri-tue-van-hanh">Course mẫu</a>
+    <a class="drawer-link" href="/lesson.html?slug=bai-1-mo-dau">Lesson mẫu</a>
+    <a class="drawer-link" href="/admin.html">Admin CMS</a>
+    <a class="drawer-link drawer-cta" href="/courses.html">Bắt đầu học →</a>
+  </div>
+</div>
 
-  <script src="/assets/app.js"></script>
+<!-- ── CONTENT ───────────────────────────────────────────────────── -->
+<div class="shell">
+  <div class="page-header">
+    <a class="back-link" href="/">← Trang chủ</a>
+    <h1>Danh sách khóa học</h1>
+    <p class="muted" style="margin-top:8px;font-size:15px">
+      Dữ liệu thật từ <code style="font-size:13px;color:var(--accent)">/api/courses</code> — Cloudflare D1
+    </p>
+  </div>
+
+  <section id="courses-list" class="grid-list">
+    <div class="state-loading">Đang tải danh sách khóa học...</div>
+  </section>
+
+  <div class="debug-panel">
+    <h2>API Output</h2>
+    <pre id="courses-output" class="output">Đang chờ dữ liệu...</pre>
+  </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="shell">
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Tueban.com — Learning Operating System</span>
+      <div class="footer-links">
+        <a href="/">Trang chủ</a>
+        <a href="/admin.html">Admin CMS</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/app.js"></script>
 </body>
 </html>

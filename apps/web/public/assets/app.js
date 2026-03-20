@@ -393,6 +393,33 @@ async function renderProgressPanel() {
   }
 }
 
+function initNav() {
+  const menuBtn  = document.getElementById("nav-menu-btn");
+  const drawer   = document.getElementById("nav-drawer");
+  const backdrop = document.getElementById("drawer-backdrop");
+  const closeBtn = document.getElementById("drawer-close");
+
+  if (!menuBtn || !drawer) return;
+
+  function openDrawer() {
+    drawer.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  menuBtn.addEventListener("click", openDrawer);
+  if (closeBtn)  closeBtn.addEventListener("click", closeDrawer);
+  if (backdrop)  backdrop.addEventListener("click", closeDrawer);
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeDrawer();
+  });
+}
+
 function bindEvents() {
   const completeBtn = qs("#complete-lesson-btn");
   if (completeBtn) {
@@ -401,6 +428,7 @@ function bindEvents() {
 }
 
 function initPage() {
+  initNav();
   bindEvents();
 
   if (qs("#courses-list")) {
