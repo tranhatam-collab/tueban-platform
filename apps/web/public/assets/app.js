@@ -1,4 +1,5 @@
-const API_BASE = "https://tueban-api.tranhatam.workers.dev";
+// Production: same domain (tueban.com/api/*). Local dev: wrangler dev port.
+const API_BASE = location.hostname === "localhost" ? "http://localhost:8787" : "";
 
 function qs(selector) {
   return document.querySelector(selector);

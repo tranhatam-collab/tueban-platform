@@ -535,7 +535,7 @@
 </div>
 
 <script>
-const API = "https://tueban-api.tranhatam.workers.dev";
+const API = location.hostname === "localhost" ? "http://localhost:8787" : "";
 
 // ── Utilities ──────────────────────────────────────────────────────
 

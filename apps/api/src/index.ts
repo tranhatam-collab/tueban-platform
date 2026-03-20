@@ -11,7 +11,7 @@ import { lessonDetailRoute } from "./routes/lessons";
 import { progressRoute } from "./routes/progress";
 import { completeLessonRoute } from "./routes/lesson-actions";
 import { adminRoute, type AdminEnv } from "./routes/admin";
-import { json } from "./lib/json";
+import { json, corsOptions } from "./lib/json";
 
 export interface Env extends SystemEnv, AdminEnv {}
 
@@ -21,6 +21,10 @@ export default {
     const pathname = url.pathname;
     const method = request.method.toUpperCase();
     const segments = pathname.split("/").filter(Boolean);
+
+    if (method === "OPTIONS") {
+      return corsOptions();
+    }
 
     if (pathname === "/api/health") {
       return healthRoute();
