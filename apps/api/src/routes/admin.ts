@@ -2,6 +2,7 @@ import { json } from "../lib/json";
 
 export interface AdminEnv {
   DB: D1Database;
+  MEDIA: R2Bucket;
 }
 
 function nowTs(): number {
@@ -544,6 +545,112 @@ async function adminUpdateLesson(
 }
 
 // ──────────────────────────────────────────
+// ASSETS
+// ──────────────────────────────────────────
+
+async function adminListAssets(env: AdminEnv): Promise<Response> {
+  try {
+    const rows = await env.DB.prepare(
+      `SELECT id, asset_type, title, storage_path, mime_type, visibility, size_bytes, owner_user_id, created_at
+       FROM media_assets
+       ORDER BY created_at DESC`
+    ).all();
+    return json({ ok: true, assets: rows.results ?? [] });
+  } catch (error) {
+    return json({ ok: false, error: String(error) }, 500);
+  }
+}
+
+async function adminCreateAsset(
+  request: Request,
+  env: AdminEnv
+): Promise<Response> {
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return json({ ok: false, error: "Invalid multipart form data" }, 400);
+  }
+
+  const file = formData.get("file") as File | null;
+  const title = ((formData.get("title") as string) || "").trim();
+  const assetType = ((formData.get("asset_type") as string) || "attachment").trim();
+  const visibility = ((formData.get("visibility") as string) || "protected").trim();
+
+  if (!file || !title) {
+    return json({ ok: false, error: "file and title are required" }, 400);
+  }
+
+  const id = makeId("asset");
+  const ts = nowTs();
+  const ext = file.name.includes(".") ? file.name.split(".").pop() : "";
+  const storageKey = `uploads/${ts}-${id}${ext ? "." + ext : ""}`;
+
+  try {
+    await env.MEDIA.put(storageKey, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type || "application/octet-stream" }
+    });
+
+    await env.DB.prepare(
+      `INSERT INTO media_assets (id, asset_type, title, storage_path, mime_type, visibility, size_bytes, owner_user_id, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'user_admin_001', ?)`
+    )
+      .bind(id, assetType, title, storageKey, file.type || null, visibility, file.size, ts)
+      .run();
+
+    return json({ ok: true, asset: { id, storage_path: storageKey } });
+  } catch (error) {
+    return json({ ok: false, error: String(error) }, 500);
+  }
+}
+
+// ──────────────────────────────────────────
+// LESSON ASSETS (attach)
+// ──────────────────────────────────────────
+
+async function adminCreateLessonAsset(
+  request: Request,
+  env: AdminEnv
+): Promise<Response> {
+  const body = await readJsonBody<Record<string, unknown>>(request);
+
+  if (
+    !body ||
+    typeof body.lesson_id !== "string" ||
+    !body.lesson_id.trim() ||
+    typeof body.asset_id !== "string" ||
+    !body.asset_id.trim()
+  ) {
+    return json({ ok: false, error: "lesson_id and asset_id are required" }, 400);
+  }
+
+  const id = makeId("la");
+  const ts = nowTs();
+
+  try {
+    await env.DB.prepare(
+      `INSERT INTO lesson_assets (id, lesson_id, asset_id, purpose, position, is_required, downloadable, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+      .bind(
+        id,
+        body.lesson_id.trim(),
+        body.asset_id.trim(),
+        typeof body.purpose === "string" ? body.purpose.trim() || "attachment" : "attachment",
+        typeof body.position === "number" ? body.position : 1,
+        body.is_required ? 1 : 0,
+        body.downloadable !== false ? 1 : 0,
+        ts
+      )
+      .run();
+
+    return json({ ok: true, lesson_asset_id: id });
+  } catch (error) {
+    return json({ ok: false, error: String(error) }, 500);
+  }
+}
+
+// ──────────────────────────────────────────
 // USERS
 // ──────────────────────────────────────────
 
@@ -676,6 +783,15 @@ export async function adminRoute(
     if (method === "POST" && !resourceId) return adminCreateLesson(request, env);
     if (method === "PATCH" && resourceId)
       return adminUpdateLesson(request, env, resourceId);
+  }
+
+  if (resource === "assets") {
+    if (method === "GET" && !resourceId) return adminListAssets(env);
+    if (method === "POST" && !resourceId) return adminCreateAsset(request, env);
+  }
+
+  if (resource === "lesson-assets") {
+    if (method === "POST" && !resourceId) return adminCreateLessonAsset(request, env);
   }
 
   if (resource === "users" && method === "GET") return adminListUsers(env);

@@ -218,6 +218,7 @@
   <button class="tab-btn" data-tab="modules">Modules</button>
   <button class="tab-btn" data-tab="topics">Topics</button>
   <button class="tab-btn" data-tab="lessons">Lessons</button>
+  <button class="tab-btn" data-tab="assets">Assets</button>
   <button class="tab-btn" data-tab="users">Users</button>
   <button class="tab-btn" data-tab="progress">Progress</button>
   <button class="tab-btn" data-tab="audit">Audit</button>
@@ -475,6 +476,103 @@
 </div>
 
 <!-- ═══════════════════════════════════════ -->
+<!-- TAB: ASSETS -->
+<!-- ═══════════════════════════════════════ -->
+<div id="tab-assets" class="tab-pane">
+  <div class="admin-grid">
+
+    <div class="form-card" style="position:sticky;top:100px">
+
+      <!-- Upload form -->
+      <h3>Upload tài liệu / media</h3>
+      <form id="asset-form">
+        <div class="form-group">
+          <label>Tên tài liệu *</label>
+          <input type="text" id="asset-title" placeholder="VD: Workbook Bài 1" required />
+        </div>
+        <div class="form-group">
+          <label>Loại tài liệu</label>
+          <select id="asset-type">
+            <option value="pdf">PDF</option>
+            <option value="video">Video</option>
+            <option value="audio">Audio</option>
+            <option value="image">Image</option>
+            <option value="attachment">Attachment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Visibility</label>
+          <select id="asset-visibility">
+            <option value="protected">Protected (members)</option>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Chọn file *</label>
+          <input type="file" id="asset-file" required
+            style="background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--text);width:100%;font-size:13px" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="asset-submit-btn">Upload</button>
+          <button type="button" class="btn btn-secondary" id="asset-reset-btn">Reset</button>
+        </div>
+        <div id="asset-msg" class="form-msg hidden"></div>
+      </form>
+
+      <hr style="border:none;border-top:1px solid var(--line);margin:24px 0" />
+
+      <!-- Attach to lesson -->
+      <h3>Gắn tài liệu vào bài học</h3>
+      <div class="form-group">
+        <label>Tài liệu</label>
+        <select id="attach-asset-id">
+          <option value="">— Chọn tài liệu —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Bài học</label>
+        <select id="attach-lesson-id">
+          <option value="">— Chọn bài học —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Mục đích</label>
+        <select id="attach-purpose">
+          <option value="attachment">Attachment</option>
+          <option value="workbook">Workbook</option>
+          <option value="reference">Reference</option>
+          <option value="required">Required reading</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="attach-downloadable" checked
+            style="width:auto;accent-color:var(--accent)" />
+          Cho phép download
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn" id="attach-btn">Gắn tài liệu</button>
+      </div>
+      <div id="attach-msg" class="form-msg hidden"></div>
+
+    </div>
+
+    <div class="list-card">
+      <div class="list-header">
+        <h3>Danh sách tài liệu / media</h3>
+        <span class="list-count" id="assets-count">—</span>
+      </div>
+      <div id="assets-table-wrap">
+        <div class="loading-state">Đang tải...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
 <!-- TAB: USERS -->
 <!-- ═══════════════════════════════════════ -->
 <div id="tab-users" class="tab-pane">
@@ -596,6 +694,7 @@ function loadTab(name) {
     case "modules":  loadModulesTab(); break;
     case "topics":   loadTopicsTab(); break;
     case "lessons":  loadLessonsTab(); break;
+    case "assets":   loadAssetsTab(); break;
     case "users":    loadUsers(); break;
     case "progress": loadProgress(); break;
     case "audit":    loadAudit(); break;
@@ -1242,6 +1341,162 @@ async function loadLedger() {
     qs("#ledger-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
   }
 }
+
+// ── ASSETS ───────────────────────────────────────────────────────
+
+let assetsCache = [];
+
+async function loadAssetsTab() {
+  await loadLessonsForAttach();
+  await loadAssets();
+}
+
+async function loadLessonsForAttach() {
+  try {
+    const data = await api("/api/admin/lessons");
+    const lessons = data.lessons || [];
+    const sel = qs("#attach-lesson-id");
+    if (!sel) return;
+    sel.innerHTML = `<option value="">— Chọn bài học —</option>` +
+      lessons.map(l =>
+        `<option value="${esc(l.id)}">${esc(l.course_title)} / ${esc(l.topic_title)} / ${esc(l.title)}</option>`
+      ).join("");
+  } catch {}
+}
+
+async function loadAssets() {
+  try {
+    const data = await api("/api/admin/assets");
+    assetsCache = data.assets || [];
+    setCount("assets-count", assetsCache.length);
+    renderAssetsTable(assetsCache);
+    updateAssetSelects();
+  } catch (e) {
+    qs("#assets-table-wrap").innerHTML = `<div class="empty-state">Lỗi tải dữ liệu: ${esc(String(e))}</div>`;
+  }
+}
+
+function renderAssetsTable(assets) {
+  if (!assets.length) {
+    qs("#assets-table-wrap").innerHTML = `<div class="empty-state">Chưa có tài liệu nào. Upload file đầu tiên ở form bên trái.</div>`;
+    return;
+  }
+  qs("#assets-table-wrap").innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tên</th>
+          <th>Loại</th>
+          <th>Storage path</th>
+          <th>Visibility</th>
+          <th>Size</th>
+          <th>Ngày upload</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${assets.map(a => `
+          <tr>
+            <td><strong>${esc(a.title)}</strong></td>
+            <td><span class="badge">${esc(a.asset_type)}</span></td>
+            <td style="color:var(--muted);font-size:12px"><code>${esc(a.storage_path)}</code></td>
+            <td><span class="badge">${esc(a.visibility)}</span></td>
+            <td style="color:var(--muted);font-size:12px">${a.size_bytes ? (a.size_bytes / 1024).toFixed(1) + ' KB' : '—'}</td>
+            <td style="color:var(--muted);font-size:12px">${fmtTs(a.created_at)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function updateAssetSelects() {
+  const sel = qs("#attach-asset-id");
+  if (!sel) return;
+  sel.innerHTML = `<option value="">— Chọn tài liệu —</option>` +
+    assetsCache.map(a =>
+      `<option value="${esc(a.id)}">[${esc(a.asset_type)}] ${esc(a.title)}</option>`
+    ).join("");
+}
+
+qs("#asset-reset-btn").addEventListener("click", () => {
+  qs("#asset-form").reset();
+  qs("#asset-msg").className = "form-msg hidden";
+});
+
+qs("#asset-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const fileInput = qs("#asset-file");
+  const file = fileInput.files[0];
+  if (!file) {
+    showMsg("asset-msg", "Vui lòng chọn file.", "err");
+    return;
+  }
+
+  const btn = qs("#asset-submit-btn");
+  btn.disabled = true;
+  const sizeKb = (file.size / 1024).toFixed(1);
+  showMsg("asset-msg", `Đang upload ${file.name} (${sizeKb} KB)...`, "");
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("title", qs("#asset-title").value.trim());
+  formData.append("asset_type", qs("#asset-type").value);
+  formData.append("visibility", qs("#asset-visibility").value);
+
+  try {
+    const res = await fetch(`${API}/api/admin/assets`, {
+      method: "POST",
+      body: formData
+      // Note: DO NOT set Content-Type here — browser sets multipart boundary automatically
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showMsg("asset-msg", `Upload thành công! Path: ${data.asset?.storage_path}`, "ok");
+      qs("#asset-form").reset();
+      reloadTab("assets");
+    } else {
+      showMsg("asset-msg", data.error || "Upload thất bại.", "err");
+    }
+  } catch (err) {
+    showMsg("asset-msg", String(err), "err");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+qs("#attach-btn").addEventListener("click", async () => {
+  const assetId = qs("#attach-asset-id").value;
+  const lessonId = qs("#attach-lesson-id").value;
+  if (!assetId || !lessonId) {
+    showMsg("attach-msg", "Vui lòng chọn tài liệu và bài học.", "err");
+    return;
+  }
+
+  const btn = qs("#attach-btn");
+  btn.disabled = true;
+
+  try {
+    const data = await api("/api/admin/lesson-assets", {
+      method: "POST",
+      body: JSON.stringify({
+        lesson_id: lessonId,
+        asset_id: assetId,
+        purpose: qs("#attach-purpose").value,
+        downloadable: qs("#attach-downloadable").checked
+      })
+    });
+
+    if (data.ok) {
+      showMsg("attach-msg", "Gắn tài liệu vào bài học thành công.", "ok");
+    } else {
+      showMsg("attach-msg", data.error || "Có lỗi xảy ra.", "err");
+    }
+  } catch (err) {
+    showMsg("attach-msg", String(err), "err");
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 // ── Init ─────────────────────────────────────────────────────────
 
