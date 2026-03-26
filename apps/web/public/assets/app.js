@@ -273,6 +273,12 @@ async function renderLessonPage() {
     const lesson = data.lesson;
     const assets = data.assets || [];
 
+    const backLink = qs("#lesson-back-link");
+    if (backLink && lesson.course_slug) {
+      backLink.href = `/course.html?slug=${encodeURIComponent(lesson.course_slug)}`;
+      backLink.textContent = `← ${lesson.course_title || "Quay lại khóa học"}`;
+    }
+
     setText("#lesson-title", lesson.title);
     setText("#lesson-course", `${lesson.course_title} / ${lesson.topic_title}`);
     setText(
