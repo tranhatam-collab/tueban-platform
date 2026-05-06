@@ -516,6 +516,81 @@ code {
   margin-top: 24px;
 }
 
+.maintenance-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+}
+
+.maintenance-card {
+  width: min(100%, 820px);
+  padding: clamp(28px, 6vw, 56px);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(216, 212, 200, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+}
+
+.maintenance-brand {
+  margin: 0;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.maintenance-divider {
+  width: 100%;
+  height: 1px;
+  margin: 28px 0;
+  background: var(--line);
+}
+
+.maintenance-copy {
+  display: grid;
+  gap: 28px;
+}
+
+.maintenance-language {
+  display: grid;
+  gap: 12px;
+}
+
+.maintenance-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.maintenance-language h1,
+.maintenance-language h2,
+.maintenance-language p {
+  margin: 0;
+}
+
+.maintenance-language h1,
+.maintenance-language h2 {
+  max-width: 720px;
+  font-size: clamp(30px, 5vw, 54px);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.maintenance-language h2 {
+  color: var(--accent);
+  font-size: clamp(24px, 4vw, 42px);
+}
+
+.maintenance-language p:not(.maintenance-label) {
+  color: var(--muted);
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.6;
+}
+
 @media (max-width: 1100px) {
   .feature-grid {
     grid-template-columns: repeat(2, 1fr);
