@@ -10,9 +10,16 @@ import { courseDetailRoute } from "./routes/course";
 import { lessonDetailRoute } from "./routes/lessons";
 import { progressRoute } from "./routes/progress";
 import { completeLessonRoute } from "./routes/lesson-actions";
+import {
+  googleCallbackRoute,
+  googleStartRoute,
+  magicLinkRequestRoute,
+  magicLinkVerifyRoute,
+  type AuthEnv
+} from "./routes/auth";
 import { json } from "./lib/json";
 
-export interface Env extends SystemEnv {}
+export interface Env extends SystemEnv, AuthEnv {}
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -78,6 +85,22 @@ export default {
 
     if (method === "POST" && pathname === "/api/lesson/complete") {
       return completeLessonRoute(request, env);
+    }
+
+    if (method === "GET" && pathname === "/api/auth/google/start") {
+      return googleStartRoute(request, env);
+    }
+
+    if (method === "GET" && pathname === "/api/auth/google/callback") {
+      return googleCallbackRoute(request, env);
+    }
+
+    if (method === "POST" && pathname === "/api/auth/magic-link/request") {
+      return magicLinkRequestRoute(request, env);
+    }
+
+    if (method === "GET" && pathname === "/api/auth/magic-link/verify") {
+      return magicLinkVerifyRoute(request, env);
     }
 
     return json(

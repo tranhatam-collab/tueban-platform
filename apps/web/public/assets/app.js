@@ -434,6 +434,40 @@ function bindEvents() {
   if (completeBtn) {
     completeBtn.addEventListener("click", completeLesson);
   }
+
+  const magicLinkForm = qs("#magic-link-form");
+  if (magicLinkForm) {
+    magicLinkForm.addEventListener("submit", requestMagicLink);
+  }
+}
+
+async function requestMagicLink(event) {
+  event.preventDefault();
+
+  const email = qs("#magic-email")?.value;
+  const output = qs("#auth-output");
+
+  if (output) {
+    output.textContent = "Đang gửi yêu cầu magic link...";
+  }
+
+  try {
+    const { data } = await fetchJson(`${API_BASE}/api/auth/magic-link/request`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email })
+    });
+
+    if (output) {
+      output.textContent = pretty(data);
+    }
+  } catch (error) {
+    if (output) {
+      output.textContent = `Lỗi gửi magic link: ${String(error)}`;
+    }
+  }
 }
 
 function bindMobileDrawer() {

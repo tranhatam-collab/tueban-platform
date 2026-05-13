@@ -235,6 +235,10 @@ code {
   padding: 24px;
 }
 
+.page-shell.narrow {
+  max-width: 880px;
+}
+
 .page-header {
   margin-bottom: 24px;
 }
@@ -499,6 +503,34 @@ code {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.field-label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.field-input {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font: inherit;
+  padding: 13px 14px;
+}
+
+.legal-copy p,
+.legal-copy li {
+  color: var(--muted);
+  line-height: 1.75;
 }
 
 .lesson-content h1,

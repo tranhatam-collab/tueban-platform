@@ -3,4 +3,19 @@
   <url>
     <loc>https://tueban.com/</loc>
   </url>
+  <url>
+    <loc>https://tueban.com/auth/</loc>
+  </url>
+  <url>
+    <loc>https://tueban.com/privacy/</loc>
+  </url>
+  <url>
+    <loc>https://tueban.com/terms/</loc>
+  </url>
+  <url>
+    <loc>https://tueban.com/support/</loc>
+  </url>
+  <url>
+    <loc>https://tueban.com/contact/</loc>
+  </url>
 </urlset>
