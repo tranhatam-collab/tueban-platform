@@ -10,7 +10,8 @@
     {
       "binding": "DB",
       "database_name": "tueban-db",
-      "database_id": "bc451abd-6de3-4f71-a324-1894b9a49418"
+      "database_id": "bc451abd-6de3-4f71-a324-1894b9a49418",
+      "migrations_dir": "database/migrations"
     }
   ],
   "r2_buckets": [
