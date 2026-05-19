@@ -8,51 +8,93 @@
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
 <body>
-  <main class="page-shell">
-    <header class="page-header">
-      <a class="back-link" href="/courses.html">← Quay lại khóa học</a>
-      <div class="status" id="lesson-slug">slug</div>
-      <h1 id="lesson-title">Đang tải bài học...</h1>
-      <p id="lesson-course" class="muted">Đang tải course/topic...</p>
-      <p id="lesson-meta" class="muted">Đang tải meta...</p>
+  <div class="app-shell">
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">T</span>
+          <span class="brand-text">
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </span>
+        </a>
+        <nav class="desktop-nav" aria-label="Điều hướng chính">
+          <a href="/courses.html">Khóa học</a>
+          <a href="/lo-trinh-hoc/">Lộ trình</a>
+          <a href="/thu-vien/">Thư viện</a>
+          <a href="/su-kien/">Sự kiện</a>
+          <a href="/gioi-thieu/">Giới thiệu</a>
+        </nav>
+        <div class="header-actions">
+          <a class="btn btn-secondary desktop-only" href="/auth/">Đăng nhập</a>
+          <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
     </header>
-
-    <section class="two-col">
-      <article class="card lesson-content">
-        <div id="lesson-body">Đang tải nội dung...</div>
-      </article>
-
-      <aside class="stack">
-        <section>
-          <h2>Tài liệu đính kèm</h2>
-          <div id="lesson-assets" class="stack">
-            <div class="card">Đang tải tài liệu...</div>
+    <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-brand">
+          <span class="brand-mark">T</span>
+          <div>
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
           </div>
-        </section>
+        </div>
+        <button id="drawer-close" class="drawer-close" type="button" aria-label="Đóng menu">&times;</button>
+      </div>
+      <nav class="drawer-nav" aria-label="Menu di động">
+        <a href="/courses.html">Khóa học</a>
+        <a href="/lo-trinh-hoc/">Lộ trình học</a>
+        <a href="/thu-vien/">Thư viện tài liệu</a>
+        <a href="/bai-viet/">Bài viết</a>
+        <a href="/su-kien/">Sự kiện</a>
+        <a href="/gioi-thieu/">Giới thiệu</a>
+        <a href="/auth/">Đăng nhập</a>
+      </nav>
+    </div>
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
 
-        <section>
-          <h2>Hành động</h2>
-          <div class="card stack">
-            <button id="complete-lesson-btn" class="btn" type="button" disabled>
-              Hoàn thành bài học
-            </button>
-            <pre id="lesson-complete-result" class="output">Chưa thực hiện.</pre>
-          </div>
-        </section>
+    <main class="page-shell">
+      <header class="page-header">
+        <div class="status" id="lesson-slug">slug</div>
+        <h1 id="lesson-title">Đang tải bài học...</h1>
+        <p id="lesson-course" class="muted">Đang tải course/topic...</p>
+        <p id="lesson-meta" class="muted">Đang tải meta...</p>
+      </header>
 
-        <section>
-          <h2>Progress học viên mẫu</h2>
-          <div id="progress-summary"></div>
-          <pre id="progress-output" class="output">Đang chờ dữ liệu...</pre>
-        </section>
-      </aside>
-    </section>
+      <section class="two-col">
+        <article class="card lesson-content">
+          <div id="lesson-body">Đang tải nội dung...</div>
+        </article>
 
-    <section class="debug-panel">
-      <h2>Lesson API Output</h2>
-      <pre id="lesson-output" class="output">Đang chờ dữ liệu...</pre>
-    </section>
-  </main>
+        <aside class="stack">
+          <section>
+            <h2>Tài liệu đính kèm</h2>
+            <div id="lesson-assets" class="stack">
+              <div class="card">Đang tải tài liệu...</div>
+            </div>
+          </section>
+
+          <section>
+            <h2>Hành động</h2>
+            <div class="card stack">
+              <button id="complete-lesson-btn" class="btn" type="button" disabled>
+                Hoàn thành bài học
+              </button>
+              <pre id="lesson-complete-result" class="output">Chưa thực hiện.</pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Tiến độ</h2>
+            <div id="progress-summary"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </div>
 
   <script src="/assets/app.js"></script>
 </body>

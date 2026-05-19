@@ -3,70 +3,179 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Tueban.com | Đang nâng cấp hệ thống</title>
-  <meta
-    name="description"
-    content="Tueban.com đang hoàn thiện nền tảng học tập trước khi công bố công khai."
-  />
+  <title>Tueban.com | Học có tiến trình, có bằng chứng</title>
+  <meta name="description" content="Tueban là nền tảng học tập có tiến trình, có bằng chứng và có kỷ luật vận hành tri thức. Khám phá khóa học đầu tiên ngay." />
   <meta name="theme-color" content="#0b0b0c" />
   <link rel="canonical" href="https://tueban.com/" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
-<body data-page="maintenance">
-  <main class="maintenance-shell" aria-labelledby="maintenance-title">
-    <section class="maintenance-card">
-      <div class="maintenance-topline">
-        <p class="maintenance-brand">Tueban.com</p>
-        <p class="maintenance-state">Đang chuẩn bị ra mắt công khai</p>
-      </div>
-      <div class="maintenance-divider" aria-hidden="true"></div>
-
-      <div class="maintenance-copy">
-        <div class="maintenance-language" lang="vi">
-          <p class="maintenance-label">Thông báo</p>
-          <h1 id="maintenance-title">Chúng tôi đang hoàn thiện Tueban trước khi công bố rộng rãi.</h1>
-          <p class="maintenance-lead">
-            Tueban.com đang được xây dựng như một nền tảng học tập có tiến trình, có bằng chứng
-            và có kỷ luật vận hành tri thức. Trong giai đoạn này, trang chủ được tạm đóng để đội ngũ
-            hoàn thiện các luồng cốt lõi và kiểm thử hệ thống trước khi mở truy cập công khai.
-          </p>
+<body data-page="home">
+  <div class="app-shell">
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">T</span>
+          <span class="brand-text">
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </span>
+        </a>
+        <nav class="desktop-nav" aria-label="Điều hướng chính">
+          <a href="/courses.html">Khóa học</a>
+          <a href="/lo-trinh-hoc/">Lộ trình</a>
+          <a href="/thu-vien/">Thư viện</a>
+          <a href="/su-kien/">Sự kiện</a>
+          <a href="/gioi-thieu/">Giới thiệu</a>
+        </nav>
+        <div class="header-actions">
+          <a class="btn btn-secondary desktop-only" href="/auth/">Đăng nhập</a>
+          <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
         </div>
+      </div>
+    </header>
 
-        <div class="maintenance-details">
-          <article class="maintenance-panel">
-            <p class="maintenance-label">Vì sao chưa mở công khai</p>
-            <p>
-              Chúng tôi chưa muốn công bố một trải nghiệm chưa trọn vẹn. Các phần đang được rà soát gồm
-              cấu trúc khóa học, nội dung bài học, tiến độ học tập, tài liệu đính kèm, bảo mật dữ liệu
-              và độ ổn định vận hành.
+    <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-brand">
+          <span class="brand-mark">T</span>
+          <div>
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </div>
+        </div>
+        <button id="drawer-close" class="drawer-close" type="button" aria-label="Đóng menu">&times;</button>
+      </div>
+      <nav class="drawer-nav" aria-label="Menu di động">
+        <a href="/courses.html">Khóa học</a>
+        <a href="/lo-trinh-hoc/">Lộ trình học</a>
+        <a href="/thu-vien/">Thư viện tài liệu</a>
+        <a href="/bai-viet/">Bài viết</a>
+        <a href="/su-kien/">Sự kiện</a>
+        <a href="/nen-tang-tri-tue/">Nền tảng trí tuệ</a>
+        <a href="/tu-dien/">Từ điển</a>
+        <a href="/cau-hoi-thuong-gap/">Câu hỏi thường gặp</a>
+        <a href="/gioi-thieu/">Giới thiệu</a>
+        <a href="/auth/">Đăng nhập</a>
+      </nav>
+      <div class="drawer-panel">
+        <p class="muted">Học có tiến trình, có bằng chứng.</p>
+      </div>
+    </div>
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+    <main>
+      <section class="page-shell">
+        <div class="hero-home">
+          <div class="hero-copy">
+            <div class="status">Tueban Learning OS</div>
+            <h1>Học có tiến trình, có bằng chứng</h1>
+            <p class="hero-text">
+              Tueban là nền tảng học tập vận hành tri thức — nơi mỗi bài học được ghi nhận bằng
+              bằng chứng bất biến trên chuỗi ledger, mỗi tiến độ được đo bằng thời gian học thực tế,
+              và mỗi người học đều có lộ trình riêng.
             </p>
-          </article>
-
-          <article class="maintenance-panel">
-            <p class="maintenance-label">Đang hoàn thiện</p>
-            <ul class="maintenance-list" aria-label="Các hạng mục đang hoàn thiện">
-              <li>Luồng course, lesson, progress và hoàn thành bài học.</li>
-              <li>Dữ liệu học tập thật và tài liệu đi kèm.</li>
-              <li>Trải nghiệm mobile, độ ổn định API và hạ tầng triển khai.</li>
-            </ul>
-          </article>
+            <div class="hero-actions">
+              <a class="btn" href="/courses.html">Xem khóa học mẫu</a>
+              <a class="btn btn-secondary" href="/gioi-thieu/">Tìm hiểu thêm</a>
+            </div>
+            <div class="hero-meta">
+              <div class="meta-item">
+                <strong>Learning OS</strong>
+                <span>Hệ điều hành học tập — cấu trúc module/topic/lesson rõ ràng.</span>
+              </div>
+              <div class="meta-item">
+                <strong>Proof</strong>
+                <span>Mỗi hành động học được ghi vào ledger bất biến, có thể kiểm tra.</span>
+              </div>
+              <div class="meta-item">
+                <strong>Discipline</strong>
+                <span>Yêu cầu mở khóa tuần tự, chống học ẩu, đo thời gian thực.</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-panel">
+            <div class="hero-stack">
+              <div class="mini-panel">
+                <div class="mini-label">Hệ thống đang hoạt động</div>
+                <p class="muted">API · Database · Ledger</p>
+                <p><span class="status-pill success">&#10003; Operational</span></p>
+              </div>
+              <div class="mini-panel">
+                <div class="mini-label">Khóa học đầu tiên</div>
+                <p class="muted">"Nhận diện bản thân" — 4 bài học, có practice & quiz</p>
+                <a class="text-link" href="/courses.html">Vào học ngay &rarr;</a>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div class="maintenance-language maintenance-english" lang="en">
-          <p class="maintenance-label">Notice</p>
-          <h2>Tueban is being prepared for public release.</h2>
-          <p class="maintenance-lead">
-            We are temporarily keeping the homepage closed while we complete and verify the core
-            learning platform. Before opening publicly, we are testing course structure, lesson content,
-            progress tracking, learning assets, data safety, and operational reliability.
-          </p>
-          <p class="maintenance-note">
-            Thank you for your patience. Please come back later.
-          </p>
+      <section class="page-shell">
+        <div class="section-block compact">
+          <div class="section-head">
+            <h2>Ba trụ cột của Tueban</h2>
+            <p class="muted">Cách chúng tôi xây dựng một nền tảng học tập thực chất.</p>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-icon">&#9776;</div>
+              <h3>Learning OS</h3>
+              <p class="muted">
+                Cấu trúc course &rarr; module &rarr; topic &rarr; lesson. Mỗi cấp có tiến độ,
+                tài liệu, practice và quiz riêng. Hệ thống mở khóa tuần tự đảm bảo không
+                bỏ qua kiến thức nền tảng.
+              </p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">&#9881;</div>
+              <h3>Proof Chain</h3>
+              <p class="muted">
+                Mỗi lần hoàn thành bài học, nộp practice, đỗ quiz đều được ghi vào ledger
+                bất biến với hash liên kết. Có thể xác minh toàn bộ lịch sử học tập bất kỳ lúc nào.
+              </p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">&#9733;</div>
+              <h3>Discipline Engine</h3>
+              <p class="muted">
+                Đo thời gian học thực tế bằng session tracking + focus ping. Chống học ẩu:
+                không thể complete lesson nếu chưa đủ thời gian hoặc chưa làm practice bắt buộc.
+              </p>
+            </article>
+            <article class="feature-card">
+              <div class="feature-icon">&#9883;</div>
+              <h3>Admin CMS</h3>
+              <p class="muted">
+                Quản lý toàn bộ nội dung, người dùng, tiến độ, ledger và audit qua giao diện
+                admin. Phân quyền owner / admin / instructor rõ ràng.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-shell">
+      <div class="section-block" style="border-top:1px solid var(--line);padding-top:24px">
+        <div class="quick-links" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between">
+          <div>
+            <strong>Tueban</strong><br>
+            <span class="muted">Learning OS &mdash; Học có tiến trình, có bằng chứng.</span>
+          </div>
+          <div>
+            <a class="muted" href="/privacy/">Quyền riêng tư</a> &middot;
+            <a class="muted" href="/terms/">Điều khoản</a> &middot;
+            <a class="muted" href="/support/">Hỗ trợ</a> &middot;
+            <a class="muted" href="/contact/">Liên hệ</a>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </footer>
+  </div>
+
+  <script src="/assets/app.js"></script>
 </body>
 </html>

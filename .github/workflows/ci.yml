@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit -p apps/api
+      - name: Validate HTML
+        run: |
+          for f in apps/web/public/*.html apps/web/public/**/index.html; do
+            if [ -f "$f" ]; then
+              python3 -c "
+import sys, re
+with open('$f') as fh:
+    html = fh.read()
+errors = []
+if not re.search(r'<!doctype html>', html, re.I):
+    errors.append('missing doctype')
+if not re.search(r'</html>', html):
+    errors.append('missing closing html')
+if errors:
+    print(f'FAIL: $f: {\", \".join(errors)}')
+    sys.exit(1)
+"
+            fi
+          done
+      - name: Check wrangler config
+        run: python3 -c "import json; json.load(open('wrangler.jsonc'))"

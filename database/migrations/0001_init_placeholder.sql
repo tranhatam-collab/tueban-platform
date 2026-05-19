@@ -1,2 +1,0 @@
--- Tueban foundation placeholder migration
--- Real schema starts after docs lock

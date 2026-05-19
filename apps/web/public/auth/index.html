@@ -7,40 +7,85 @@
   <meta name="description" content="Đăng nhập Tueban bằng Google hoặc magic link email." />
   <link rel="stylesheet" href="/assets/app.css" />
 </head>
-<body data-page="auth">
-  <main class="page-shell narrow">
-    <header class="page-header">
-      <a class="back-link" href="/">← Trang chủ</a>
-      <div class="status">Member access</div>
-      <h1>Đăng nhập Tueban</h1>
-      <p class="muted">
-        Dùng Google hoặc nhận magic link qua email. Nếu provider chưa được cấu hình, hệ thống sẽ báo rõ secret còn thiếu.
-      </p>
-    </header>
-
-    <section class="stack-lg">
-      <article class="card">
-        <h2>Google</h2>
-        <p class="muted">Dành cho học viên hoặc thành viên dùng Google ID.</p>
-        <div class="actions">
-          <a class="btn" href="https://tueban-api.tranhatam.workers.dev/api/auth/google/start?redirect=1">
-            Tiếp tục với Google
-          </a>
+<body>
+  <div class="app-shell">
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">T</span>
+          <span class="brand-text">
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </span>
+        </a>
+        <nav class="desktop-nav" aria-label="Điều hướng chính">
+          <a href="/courses.html">Khóa học</a>
+          <a href="/lo-trinh-hoc/">Lộ trình</a>
+          <a href="/thu-vien/">Thư viện</a>
+          <a href="/su-kien/">Sự kiện</a>
+          <a href="/gioi-thieu/">Giới thiệu</a>
+        </nav>
+        <div class="header-actions">
+          <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
         </div>
-      </article>
+      </div>
+    </header>
+    <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-brand">
+          <span class="brand-mark">T</span>
+          <div>
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </div>
+        </div>
+        <button id="drawer-close" class="drawer-close" type="button" aria-label="Đóng menu">&times;</button>
+      </div>
+      <nav class="drawer-nav" aria-label="Menu di động">
+        <a href="/courses.html">Khóa học</a>
+        <a href="/lo-trinh-hoc/">Lộ trình học</a>
+        <a href="/thu-vien/">Thư viện tài liệu</a>
+        <a href="/bai-viet/">Bài viết</a>
+        <a href="/su-kien/">Sự kiện</a>
+        <a href="/gioi-thieu/">Giới thiệu</a>
+        <a href="/auth/">Đăng nhập</a>
+      </nav>
+    </div>
+    <div id="drawer-backdrop" class="drawer-backdrop"></div>
 
-      <article class="card">
-        <h2>Magic link</h2>
-        <p class="muted">Nhập email để nhận link đăng nhập một lần.</p>
-        <form id="magic-link-form" class="auth-form">
-          <label class="field-label" for="magic-email">Email</label>
-          <input id="magic-email" class="field-input" type="email" autocomplete="email" required />
-          <button class="btn" type="submit">Gửi magic link</button>
-        </form>
-        <pre id="auth-output" class="output">Đang chờ thao tác...</pre>
-      </article>
-    </section>
-  </main>
+    <main class="page-shell narrow">
+      <header class="page-header">
+        <div class="status">Member access</div>
+        <h1>Đăng nhập Tueban</h1>
+        <p class="muted">Dùng Google hoặc nhận magic link qua email.</p>
+      </header>
+
+      <section class="stack-lg">
+        <article class="card">
+          <h2>Google</h2>
+          <p class="muted">Dành cho học viên hoặc thành viên dùng Google ID.</p>
+          <div class="actions">
+            <a class="btn" href="https://tueban-api.tranhatam.workers.dev/api/auth/google/start?redirect=1">
+              Tiếp tục với Google
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Magic link</h2>
+          <p class="muted">Nhập email để nhận link đăng nhập một lần.</p>
+          <form id="magic-link-form" class="auth-form">
+            <label class="field-label" for="magic-email">Email</label>
+            <input id="magic-email" class="field-input" type="email" autocomplete="email" required />
+            <button class="btn" type="submit">Gửi magic link</button>
+          </form>
+          <pre id="auth-output" class="output">Đang chờ thao tác...</pre>
+        </article>
+      </section>
+    </main>
+  </div>
 
   <script src="/assets/app.js"></script>
 </body>

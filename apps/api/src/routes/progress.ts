@@ -1,4 +1,5 @@
 import { json } from "../lib/json";
+import { getCurrentUser } from "../lib/session";
 
 export interface ProgressEnv {
   DB: D1Database;
@@ -46,15 +47,15 @@ export async function progressRoute(
   env: ProgressEnv
 ): Promise<Response> {
   const url = new URL(request.url);
-  const userId = url.searchParams.get("user_id");
   const courseId = url.searchParams.get("course_id");
+
+  const user = await getCurrentUser(request, env);
+  const userIdFromParam = url.searchParams.get("user_id");
+  const userId = user?.user_id || userIdFromParam;
 
   if (!userId || !courseId) {
     return json(
-      {
-        ok: false,
-        error: "Missing user_id or course_id query parameter"
-      },
+      { ok: false, error: "Missing user_id or course_id" },
       400
     );
   }
@@ -63,14 +64,8 @@ export async function progressRoute(
     const courseProgress = await env.DB.prepare(
       `
       SELECT
-        id,
-        user_id,
-        course_id,
-        status,
-        progress_percent,
-        started_at,
-        completed_at,
-        updated_at
+        id, user_id, course_id, status, progress_percent,
+        started_at, completed_at, updated_at
       FROM user_course_progress
       WHERE user_id = ? AND course_id = ?
       LIMIT 1
@@ -82,15 +77,9 @@ export async function progressRoute(
     const topicProgresses = await env.DB.prepare(
       `
       SELECT
-        utp.id,
-        utp.topic_id,
-        t.title,
-        t.slug,
-        utp.status,
-        utp.started_at,
-        utp.completed_at,
-        utp.approved_at,
-        utp.updated_at
+        utp.id, utp.topic_id, t.title, t.slug,
+        utp.status, utp.started_at, utp.completed_at,
+        utp.approved_at, utp.updated_at
       FROM user_topic_progress utp
       INNER JOIN course_topics t ON t.id = utp.topic_id
       INNER JOIN course_modules m ON m.id = t.module_id
@@ -104,17 +93,10 @@ export async function progressRoute(
     const lessonProgresses = await env.DB.prepare(
       `
       SELECT
-        ulp.id,
-        ulp.lesson_id,
-        l.title,
-        l.slug,
-        ulp.status,
-        ulp.active_learning_seconds,
-        ulp.video_watch_seconds,
-        ulp.reading_estimate_seconds,
-        ulp.opened_at,
-        ulp.completed_at,
-        ulp.updated_at
+        ulp.id, ulp.lesson_id, l.title, l.slug,
+        ulp.status, ulp.active_learning_seconds,
+        ulp.video_watch_seconds, ulp.reading_estimate_seconds,
+        ulp.opened_at, ulp.completed_at, ulp.updated_at
       FROM user_lesson_progress ulp
       INNER JOIN lessons l ON l.id = ulp.lesson_id
       INNER JOIN course_topics t ON t.id = l.topic_id
@@ -136,12 +118,7 @@ export async function progressRoute(
     });
   } catch (error) {
     return json(
-      {
-        ok: false,
-        error: String(error),
-        user_id: userId,
-        course_id: courseId
-      },
+      { ok: false, error: String(error), user_id: userId, course_id: courseId },
       500
     );
   }

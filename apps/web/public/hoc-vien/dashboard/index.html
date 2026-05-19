@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard | Tueban</title>
+  <meta name="description" content="Bảng điều khiển học viên Tueban" />
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">T</span>
+          <span class="brand-text">
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </span>
+        </a>
+        <nav class="desktop-nav">
+          <a href="/courses.html">Khóa học</a>
+          <a href="/auth/">Đăng nhập</a>
+        </nav>
+        <div class="header-actions">
+          <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main class="page-shell narrow">
+      <h1>Dashboard học viên</h1>
+      <p class="muted">Theo dõi tiến độ học tập của bạn.</p>
+      <div id="dashboard-enrollments" class="stack-lg" style="margin-top:20px">
+        <div class="card">Đang tải...</div>
+      </div>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

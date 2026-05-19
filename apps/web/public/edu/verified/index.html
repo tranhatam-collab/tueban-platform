@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Xác minh thành tích | Tueban</title>
+  <meta name="description" content="Xác minh bằng chứng học tập Tueban" />
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark">T</span>
+          <span class="brand-text">
+            <strong>Tueban</strong>
+            <small>Learning OS</small>
+          </span>
+        </a>
+      </div>
+    </header>
+    <main class="page-shell narrow">
+      <div class="status">Edu Proof</div>
+      <h1>Xác minh thành tích học tập</h1>
+      <p class="muted">Bằng chứng học tập được xác minh qua ledger bất biến.</p>
+      <div id="proof-result" class="stack-lg" style="margin-top:24px">
+        <div class="card">Đang tải thông tin xác minh...</div>
+      </div>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+  <script>
+    (async function() {
+      const publicId = window.location.pathname.split('/').filter(Boolean).pop();
+      if (!publicId || publicId === 'verified') return;
+      const el = document.getElementById('proof-result');
+      try {
+        const res = await fetch('https://tueban-api.tranhatam.workers.dev/api/proof/' + encodeURIComponent(publicId));
+        const data = await res.json();
+        if (!data.ok || !data.proof) {
+          el.innerHTML = '<div class="card">Không tìm thấy bằng chứng.</div>';
+          return;
+        }
+        const p = data.proof;
+        el.innerHTML = `
+          <div class="card">
+            <h2>${p.target_type}: ${p.target_id}</h2>
+            <p class="muted">Học viên: ${p.full_name || p.email}</p>
+            <p class="muted">Mã công khai: ${p.public_id}</p>
+            <p class="muted">Thời gian: ${new Date(p.created_at * 1000).toLocaleString('vi-VN')}</p>
+            <hr style="border-color:var(--line);margin:16px 0">
+            <p class="muted" style="font-size:13px">
+              Ledger event: ${p.ledger_event_type || 'N/A'}<br>
+              Hash: ${p.ledger_hash || 'N/A'}<br>
+              Previous hash: ${p.ledger_previous_hash || 'N/A'}
+            </p>
+          </div>
+        `;
+      } catch(e) {
+        el.innerHTML = '<div class="card">Lỗi tải thông tin.</div>';
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 import { json } from "../lib/json";
+import { getCurrentUser } from "../lib/session";
 
 export interface AuthEnv {
   DB: D1Database;
@@ -413,3 +414,45 @@ export async function magicLinkVerifyRoute(request: Request, env: AuthEnv): Prom
   const sessionToken = await createSession(env, request, userId);
   return redirectWithSession(`${getBaseUrl(request, env)}/auth/?status=magic_ok`, sessionToken);
 }
+
+export async function meRoute(request: Request, env: AuthEnv): Promise<Response> {
+  const user = await getCurrentUser(request, env);
+  if (!user) {
+    return json({ ok: false, error: "Not authenticated" }, 401);
+  }
+  return json({ ok: true, user });
+}
+
+function getCookieValue(request: Request, name: string): string | null {
+  const cookie = request.headers.get("cookie");
+  if (!cookie) return null;
+  for (const part of cookie.split(";")) {
+    const trimmed = part.trim();
+    if (trimmed.startsWith(name + "=")) {
+      return trimmed.slice(name.length + 1);
+    }
+  }
+  return null;
+}
+
+export async function logoutRoute(request: Request, env: AuthEnv): Promise<Response> {
+  const token = getCookieValue(request, "tueban_session");
+  if (!token) {
+    return json({ ok: false, error: "No session" }, 401);
+  }
+  const tokenHash = await sha256Hex(token);
+  const timestamp = nowTs();
+  await env.DB.prepare("UPDATE sessions SET revoked_at = ? WHERE token_hash = ? AND revoked_at IS NULL")
+    .bind(timestamp, tokenHash)
+    .run();
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: "/",
+      "set-cookie": "tueban_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0",
+      "cache-control": "no-store"
+    }
+  });
+}
+
+

@@ -8,18 +8,29 @@ import {
 import { listCoursesRoute, courseOutlineRoute } from "./routes/courses";
 import { courseDetailRoute } from "./routes/course";
 import { lessonDetailRoute } from "./routes/lessons";
+import { unlockStatusRoute } from "./routes/lessons-unlock";
 import { progressRoute } from "./routes/progress";
 import { completeLessonRoute } from "./routes/lesson-actions";
+import { assetUrlRoute } from "./routes/assets";
+import { practiceListRoute, practiceSubmitRoute, practiceMeRoute } from "./routes/practice";
+import { quizByTopicRoute, quizStartRoute, quizSubmitRoute } from "./routes/quizzes";
+import { notesListRoute, notesCreateRoute, notesUpdateRoute, notesDeleteRoute } from "./routes/notes";
+import { listEventsRoute, eventDetailRoute } from "./routes/events";
+import { publicProofRoute } from "./routes/proof";
+import { sessionStartRoute, sessionPingRoute, sessionEndRoute } from "./routes/learning-sessions";
 import {
   googleCallbackRoute,
   googleStartRoute,
   magicLinkRequestRoute,
   magicLinkVerifyRoute,
+  meRoute,
+  logoutRoute,
   type AuthEnv
 } from "./routes/auth";
+import { adminRoute, type AdminEnv } from "./routes/admin";
 import { json } from "./lib/json";
 
-export interface Env extends SystemEnv, AuthEnv {}
+export interface Env extends SystemEnv, AuthEnv, AdminEnv {}
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -79,6 +90,17 @@ export default {
       return lessonDetailRoute(env, lessonSlug);
     }
 
+    if (
+      method === "GET" &&
+      segments.length === 4 &&
+      segments[0] === "api" &&
+      segments[1] === "lessons" &&
+      segments[3] === "unlock-status"
+    ) {
+      const lessonSlug = segments[2];
+      return unlockStatusRoute(request, env, lessonSlug);
+    }
+
     if (method === "GET" && pathname === "/api/progress") {
       return progressRoute(request, env);
     }
@@ -103,6 +125,75 @@ export default {
       return magicLinkVerifyRoute(request, env);
     }
 
+    if (method === "GET" && pathname === "/api/me") {
+      return meRoute(request, env);
+    }
+
+    if (method === "POST" && pathname === "/api/auth/logout") {
+      return logoutRoute(request, env);
+    }
+
+    if (method === "GET" && pathname === "/api/notes") {
+      return notesListRoute(request, env);
+    }
+    if (method === "POST" && pathname === "/api/notes") {
+      return notesCreateRoute(request, env);
+    }
+    if (method === "PATCH" && segments.length === 4 && segments[0] === "api" && segments[1] === "notes" && segments[2]) {
+      return notesUpdateRoute(request, env, segments[2]);
+    }
+    if (method === "DELETE" && segments.length === 4 && segments[0] === "api" && segments[1] === "notes" && segments[2]) {
+      return notesDeleteRoute(request, env, segments[2]);
+    }
+
+    if (method === "POST" && pathname === "/api/learning/session/start") {
+      return sessionStartRoute(request, env);
+    }
+    if (method === "POST" && pathname === "/api/learning/session/ping") {
+      return sessionPingRoute(request, env);
+    }
+    if (method === "POST" && pathname === "/api/learning/session/end") {
+      return sessionEndRoute(request, env);
+    }
+
+    if (method === "GET" && segments.length === 4 && segments[0] === "api" && segments[1] === "proof" && segments[2]) {
+      return publicProofRoute(request, env, segments[2]);
+    }
+
+    if (method === "GET" && pathname === "/api/events") {
+      return listEventsRoute(env);
+    }
+    if (method === "GET" && segments.length === 4 && segments[0] === "api" && segments[1] === "events" && segments[2]) {
+      return eventDetailRoute(env, segments[2]);
+    }
+
+    if (method === "GET" && segments.length === 4 && segments[0] === "api" && segments[1] === "assets" && segments[3] === "url") {
+      return assetUrlRoute(request, env, segments[2]);
+    }
+
+    if (method === "GET" && segments.length === 4 && segments[0] === "api" && segments[1] === "practice" && segments[2] === "topic") {
+      return practiceListRoute(request, env, segments[3]);
+    }
+    if (method === "POST" && pathname === "/api/practice/submit") {
+      return practiceSubmitRoute(request, env);
+    }
+    if (method === "GET" && pathname === "/api/practice/me") {
+      return practiceMeRoute(request, env);
+    }
+
+    if (method === "GET" && segments.length === 4 && segments[0] === "api" && segments[1] === "quizzes" && segments[2] === "topic") {
+      return quizByTopicRoute(request, env, segments[3]);
+    }
+    if (method === "POST" && segments.length === 4 && segments[0] === "api" && segments[1] === "quizzes" && segments[3] === "start") {
+      return quizStartRoute(request, env, segments[2]);
+    }
+    if (method === "POST" && segments.length === 4 && segments[0] === "api" && segments[1] === "quizzes" && segments[3] === "submit") {
+      return quizSubmitRoute(request, env, segments[2]);
+    }
+
+    const adminResult = adminRoute(request, env);
+    if (adminResult) return adminResult;
+
     return json(
       {
         ok: false,
@@ -114,10 +205,25 @@ export default {
     );
   },
 
-  async queue(batch: MessageBatch<unknown>): Promise<void> {
+  async queue(batch: MessageBatch<unknown>, env: Env): Promise<void> {
     for (const message of batch.messages) {
-      console.log("Queue message received:", JSON.stringify(message.body));
-      message.ack();
+      const event = message.body as Record<string, unknown>;
+      try {
+        if (event?.type === "ledger.append") {
+          const { default: { appendLedgerEvent } } = await import("./lib/ledger");
+          await appendLedgerEvent(env, {
+            event_type: String(event.event_type || "queue_event"),
+            actor_user_id: event.actor_user_id ? String(event.actor_user_id) : null,
+            target_type: String(event.target_type || "unknown"),
+            target_id: String(event.target_id || "unknown"),
+            payload: (event.payload as Record<string, unknown>) || {}
+          });
+        }
+        message.ack();
+      } catch (err) {
+        console.error("Queue processing error:", err);
+        message.retry();
+      }
     }
   }
 };

@@ -5,8 +5,13 @@
   "scripts": {
     "dev:web": "python3 -m http.server 8788 --directory apps/web/public",
     "dev:worker": "wrangler dev",
+    "dev": "bash scripts/dev.sh",
     "deploy:worker": "wrangler deploy",
-    "check": "echo 'foundation check ready'"
+    "deploy": "bash scripts/deploy.sh",
+    "db:migrate": "wrangler d1 migrations apply tueban-db --remote",
+    "db:seed": "wrangler d1 execute tueban-db --remote --file=database/seeds/0001_sample_data.sql",
+    "typecheck": "tsc --noEmit -p apps/api",
+    "check": "bash scripts/check.sh"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260308.0",
