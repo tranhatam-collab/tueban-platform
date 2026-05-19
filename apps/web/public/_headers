@@ -3,3 +3,12 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/admin/*
+  X-Robots-Tag: noindex
+
+/hoc-vien/*
+  X-Robots-Tag: noindex
+
+/edu/*
+  X-Robots-Tag: noindex
