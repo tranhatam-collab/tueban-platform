@@ -1,6 +1,6 @@
 import { json } from "../lib/json";
 import { getCurrentUser } from "../lib/session";
-import { requireAdmin, requireInstructor } from "../lib/rbac";
+import { requireAdmin } from "../lib/rbac";
 import { verifyLedgerChain } from "../lib/ledger";
 
 export interface AdminEnv {

@@ -28,6 +28,7 @@ import {
   type AuthEnv
 } from "./routes/auth";
 import { adminRoute, type AdminEnv } from "./routes/admin";
+import { appendLedgerEvent } from "./lib/ledger";
 import { json } from "./lib/json";
 
 export interface Env extends SystemEnv, AuthEnv, AdminEnv {}
@@ -210,7 +211,6 @@ export default {
       const event = message.body as Record<string, unknown>;
       try {
         if (event?.type === "ledger.append") {
-          const { default: { appendLedgerEvent } } = await import("./lib/ledger");
           await appendLedgerEvent(env, {
             event_type: String(event.event_type || "queue_event"),
             actor_user_id: event.actor_user_id ? String(event.actor_user_id) : null,
